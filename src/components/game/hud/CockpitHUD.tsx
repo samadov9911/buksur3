@@ -191,7 +191,7 @@ export default function CockpitHUD() {
 
       {/* ===== ЦЕНТР: Прицел + Стрелка тяги ===== */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <svg width={isMobile ? 90 : 120} height={isMobile ? 90 : 120} viewBox="-60 -60 120 120" className="opacity-80">
+        <svg width={isMobile ? 70 : 120} height={isMobile ? 70 : 120} viewBox="-60 -60 120 120" className="opacity-80">
           {/* Внешний круг */}
           <circle cx="0" cy="0" r="40" fill="none" stroke="rgba(0,255,136,0.3)" strokeWidth="1" strokeDasharray="4 4" />
           {/* Крест */}
@@ -222,40 +222,40 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== ЛЕВАЯ ПАНЕЛЬ: Высота + Отклонение высоты ===== */}
-      <div className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'left-1.5' : 'left-3'}`}>
+      <div className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'left-1' : 'left-3'}`}>
         {/* Высота */}
-        <div className={`${isMobile ? 'mb-1 px-1.5 py-1' : 'mb-2 px-2 py-1.5'} rounded`} style={PANEL}>
-          <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ВЫСОТА</div>
-          <div className={`${isMobile ? 'text-sm' : 'text-lg'} font-bold leading-tight`} style={{ color: VALUE_CLR }}>
+        <div className={`${isMobile ? 'mb-0.5 px-1 py-0.5' : 'mb-2 px-2 py-1.5'} rounded`} style={PANEL}>
+          <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ВЫС</div>
+          <div className={`${isMobile ? 'text-[10px]' : 'text-lg'} font-bold leading-tight`} style={{ color: VALUE_CLR }}>
             {safeNum(altitude, 1)}
           </div>
-          <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>км</div>
+          <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>км</div>
         </div>
 
         {/* Отклонение высоты */}
-        <div className={`flex items-center ${isMobile ? 'gap-1 mb-1' : 'gap-1.5 mb-2'}`}>
-          <div className={`relative ${isMobile ? 'w-5 h-16' : 'w-6 h-24'} rounded`} style={{ background: 'rgba(0,20,10,0.4)', border: '1px solid rgba(0,255,136,0.12)' }}>
+        <div className={`flex items-center ${isMobile ? 'gap-0.5 mb-0.5' : 'gap-1.5 mb-2'}`}>
+          <div className={`relative ${isMobile ? 'w-4 h-12' : 'w-6 h-24'} rounded`} style={{ background: 'rgba(0,20,10,0.4)', border: '1px solid rgba(0,255,136,0.12)' }}>
             <div className="absolute left-0 right-0 top-1/2 -translate-y-px" style={{ height: '1px', background: 'rgba(0,255,136,0.3)' }} />
             {/* Маркер отклонения */}
             <div className="absolute left-0 right-0 -translate-y-1/2 transition-all duration-300" style={{
               top: `${50 - Math.max(-100, Math.min(100, altDev / 2)) * 0.5}%`,
             }}>
-              <div className="w-full h-1.5 rounded-sm" style={{ background: altDevColor }} />
+              <div className="w-full h-1 rounded-sm" style={{ background: altDevColor }} />
             </div>
           </div>
           <div className="flex flex-col items-start">
-            <span className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔH</span>
-            <span className={`${isMobile ? 'text-[10px]' : 'text-[11px]'} font-bold`} style={{ color: altDevColor }}>
+            <span className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔH</span>
+            <span className={`${isMobile ? 'text-[8px]' : 'text-[11px]'} font-bold`} style={{ color: altDevColor }}>
               {Number.isFinite(altDev) ? (altDev > 0 ? '+' : '') + safeNum(altDev, 0) : '---'}
             </span>
-            <span className="text-[7px]" style={{ color: LABEL_CLR }}>км</span>
+            <span className="text-[6px]" style={{ color: LABEL_CLR }}>км</span>
           </div>
         </div>
 
         {/* Целевая высота */}
-        <div className={`text-center ${isMobile ? 'px-1.5 py-0.5' : 'px-2 py-1'} rounded`} style={{ background: 'rgba(0,20,10,0.3)', border: '1px solid rgba(0,255,136,0.1)' }}>
-          <span className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ЦЕЛЬ </span>
-          <span className={`${isMobile ? 'text-[9px]' : 'text-[10px]'} font-bold`} style={{ color: 'rgba(0,255,136,0.7)' }}>
+        <div className={`text-center ${isMobile ? 'px-1 py-px' : 'px-2 py-1'} rounded`} style={{ background: 'rgba(0,20,10,0.3)', border: '1px solid rgba(0,255,136,0.1)' }}>
+          <span className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ЦЕЛЬ </span>
+          <span className={`${isMobile ? 'text-[7px]' : 'text-[10px]'} font-bold`} style={{ color: 'rgba(0,255,136,0.7)' }}>
             {safeNum(targetAltKm, 0)} км
           </span>
         </div>
@@ -269,29 +269,29 @@ export default function CockpitHUD() {
       )}
 
       {/* ===== ПРАВАЯ ПАНЕЛЬ: Все основные параметры ===== */}
-      <div className={`absolute top-1/2 -translate-y-1/2 flex flex-col ${isMobile ? 'right-1.5 gap-0.5' : 'right-3 gap-1.5'} items-end`}>
+      <div className={`absolute top-1/2 -translate-y-1/2 flex flex-col ${isMobile ? 'right-1 gap-px' : 'right-3 gap-1.5'} items-end`}>
         {/* Скорость */}
-        <div className={`${isMobile ? 'px-1.5 py-0.5' : 'px-2 py-1.5'} rounded text-right`} style={PANEL}>
-          <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>СКОРОСТЬ</div>
-          <div className={`${isMobile ? 'text-sm' : 'text-lg'} font-bold leading-tight`} style={{ color: VALUE_CLR }}>
+        <div className={`${isMobile ? 'px-1 py-px' : 'px-2 py-1.5'} rounded text-right`} style={PANEL}>
+          <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>СКР</div>
+          <div className={`${isMobile ? 'text-[10px]' : 'text-lg'} font-bold leading-tight`} style={{ color: VALUE_CLR }}>
             {safeNum(speed, 0)}
           </div>
-          <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>м/с</div>
+          <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>м/с</div>
         </div>
 
         {/* Наклонение */}
-        <div className={`${isMobile ? 'px-1.5 py-0.5' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
-          <div className="flex items-center justify-end gap-1">
-            <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>НАКЛ</div>
-            <div className={`${isMobile ? 'text-xs' : 'text-sm'} font-bold`} style={{ color: VALUE_CLR }}>
+        <div className={`${isMobile ? 'px-1 py-px' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
+          <div className="flex items-center justify-end gap-0.5">
+            <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>НКЛ</div>
+            <div className={`${isMobile ? 'text-[9px]' : 'text-sm'} font-bold`} style={{ color: VALUE_CLR }}>
               {safeNum(inclination, 2)}°
             </div>
           </div>
           {/* Отклонение наклонения */}
           {targetInc > 0 && (
-            <div className="flex items-center justify-end gap-1 mt-0.5">
-              <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔI</div>
-              <div className={`${isMobile ? 'text-[9px]' : 'text-[10px]'} font-bold`} style={{ color: incDevColor }}>
+            <div className="flex items-center justify-end gap-0.5 mt-px">
+              <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔI</div>
+              <div className={`${isMobile ? 'text-[7px]' : 'text-[10px]'} font-bold`} style={{ color: incDevColor }}>
                 {Number.isFinite(incDev) ? (incDev > 0 ? '+' : '') + safeNum(incDev, 2) + '°' : '---'}
               </div>
             </div>
@@ -299,78 +299,78 @@ export default function CockpitHUD() {
         </div>
 
         {/* Апогей / Перигей */}
-        <div className={`${isMobile ? 'px-1.5 py-0.5' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
-          <div className="flex items-center justify-end gap-1.5">
+        <div className={`${isMobile ? 'px-1 py-px' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
+          <div className="flex items-center justify-end gap-1">
             <div>
-              <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>АПГ</div>
-              <div className={`${isMobile ? 'text-[10px]' : 'text-xs'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(apogee, 0)}</div>
+              <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>АПГ</div>
+              <div className={`${isMobile ? 'text-[8px]' : 'text-xs'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(apogee, 0)}</div>
             </div>
-            <div className="w-px h-4" style={{ background: 'rgba(0,255,136,0.2)' }} />
+            <div className="w-px h-3" style={{ background: 'rgba(0,255,136,0.2)' }} />
             <div>
-              <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ПГ</div>
-              <div className={`${isMobile ? 'text-[10px]' : 'text-xs'} font-bold`} style={{ color: perigee < 80 ? CRIT_CLR : VALUE_CLR }}>{safeNum(perigee, 0)}</div>
+              <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ПГ</div>
+              <div className={`${isMobile ? 'text-[8px]' : 'text-xs'} font-bold`} style={{ color: perigee < 80 ? CRIT_CLR : VALUE_CLR }}>{safeNum(perigee, 0)}</div>
             </div>
           </div>
         </div>
 
         {/* Эксцентриситет + Период */}
-        <div className={`${isMobile ? 'px-1.5 py-0.5' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
-          <div className="flex items-center justify-end gap-1.5">
+        <div className={`${isMobile ? 'px-1 py-px' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
+          <div className="flex items-center justify-end gap-1">
             <div>
-              <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ЭКСЦ</div>
-              <div className={`${isMobile ? 'text-[9px]' : 'text-xs'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(eccentricity, 4)}</div>
+              <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ЭКС</div>
+              <div className={`${isMobile ? 'text-[7px]' : 'text-xs'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(eccentricity, 4)}</div>
             </div>
-            <div className="w-px h-4" style={{ background: 'rgba(0,255,136,0.2)' }} />
+            <div className="w-px h-3" style={{ background: 'rgba(0,255,136,0.2)' }} />
             <div>
-              <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ПЕР</div>
-              <div className={`${isMobile ? 'text-[9px]' : 'text-xs'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(period, 0)}</div>
+              <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ПР</div>
+              <div className={`${isMobile ? 'text-[7px]' : 'text-xs'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(period, 0)}</div>
             </div>
           </div>
         </div>
 
-        {/* Ориентация: X, Y, Z — compact single line on mobile */}
-        <div className={`${isMobile ? 'px-1.5 py-0.5' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
-          <div className={isMobile ? 'text-[7px] mb-px' : 'text-[8px] mb-0.5'} style={{ color: LABEL_CLR }}>ОРИЕНТ</div>
-          <div className={`flex items-center justify-end ${isMobile ? 'gap-1.5' : 'gap-2'}`}>
+        {/* Ориентация: X, Y, Z — ultra compact on mobile */}
+        <div className={`${isMobile ? 'px-1 py-px' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
+          <div className={isMobile ? 'text-[6px]' : 'text-[8px] mb-0.5'} style={{ color: LABEL_CLR }}>ОРНТ</div>
+          <div className={`flex items-center justify-end ${isMobile ? 'gap-1' : 'gap-2'}`}>
             <div>
-              <div className="text-[7px]" style={{ color: LABEL_CLR }}>X</div>
-              <div className={`${isMobile ? 'text-[9px]' : 'text-[10px]'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(rotX, 1)}°</div>
+              <div className="text-[6px]" style={{ color: LABEL_CLR }}>X</div>
+              <div className={`${isMobile ? 'text-[7px]' : 'text-[10px]'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(rotX, 1)}°</div>
             </div>
             <div>
-              <div className="text-[7px]" style={{ color: LABEL_CLR }}>Y</div>
-              <div className={`${isMobile ? 'text-[9px]' : 'text-[10px]'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(rotY, 1)}°</div>
+              <div className="text-[6px]" style={{ color: LABEL_CLR }}>Y</div>
+              <div className={`${isMobile ? 'text-[7px]' : 'text-[10px]'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(rotY, 1)}°</div>
             </div>
             <div>
-              <div className="text-[7px]" style={{ color: LABEL_CLR }}>Z</div>
-              <div className={`${isMobile ? 'text-[9px]' : 'text-[10px]'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(rotZ, 1)}°</div>
+              <div className="text-[6px]" style={{ color: LABEL_CLR }}>Z</div>
+              <div className={`${isMobile ? 'text-[7px]' : 'text-[10px]'} font-bold`} style={{ color: VALUE_CLR }}>{safeNum(rotZ, 1)}°</div>
             </div>
           </div>
         </div>
 
         {/* Расстояние до цели (janitor) */}
         {gameMode === 'janitor' && (
-          <div className={`${isMobile ? 'px-1.5 py-0.5' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
-            <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>РАССТ</div>
-            <div className={`${isMobile ? 'text-[10px]' : 'text-xs'} font-bold`} style={{ color: distanceToTarget < 50 ? '#00ccff' : VALUE_CLR }}>
+          <div className={`${isMobile ? 'px-1 py-px' : 'px-2 py-1'} rounded text-right`} style={PANEL}>
+            <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>РСТ</div>
+            <div className={`${isMobile ? 'text-[8px]' : 'text-xs'} font-bold`} style={{ color: distanceToTarget < 50 ? '#00ccff' : VALUE_CLR }}>
               {safeNum(distanceToTarget, 0)} м
             </div>
-            <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔV {safeNum(relativeSpeed, 1)} м/с</div>
+            <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔV {safeNum(relativeSpeed, 1)} м/с</div>
           </div>
         )}
       </div>
 
       {/* ===== НИЖНЯЯ ЛЕВАЯ: ΔV запас ===== */}
-      <div className={`absolute ${isMobile ? 'left-1.5 bottom-32' : 'left-3 bottom-16'}`}>
-        <div className={`${isMobile ? 'px-1.5 py-1' : 'px-2.5 py-2'} rounded`} style={PANEL}>
-          <div className={`flex items-center ${isMobile ? 'gap-1' : 'gap-2'}`}>
-            <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔV</div>
-            <div className={`${isMobile ? 'w-14 h-1.5' : 'w-24 h-2.5'} rounded-sm overflow-hidden`} style={{ background: 'rgba(0,255,136,0.1)' }}>
+      <div className={`absolute ${isMobile ? 'left-1 bottom-36' : 'left-3 bottom-16'}`}>
+        <div className={`${isMobile ? 'px-1 py-0.5' : 'px-2.5 py-2'} rounded`} style={PANEL}>
+          <div className={`flex items-center ${isMobile ? 'gap-0.5' : 'gap-2'}`}>
+            <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔV</div>
+            <div className={`${isMobile ? 'w-10 h-1' : 'w-24 h-2.5'} rounded-sm overflow-hidden`} style={{ background: 'rgba(0,255,136,0.1)' }}>
               <div className="h-full rounded-sm transition-all duration-500" style={{
                 width: `${Math.min(100, dvPercent)}%`,
                 background: dvColor,
               }} />
             </div>
-            <div className={`${isMobile ? 'text-[8px]' : 'text-[10px]'} font-bold`} style={{ color: dvColor }}>
+            <div className={`${isMobile ? 'text-[7px]' : 'text-[10px]'} font-bold`} style={{ color: dvColor }}>
               {safeNum(remainingDeltaV, 0)}
             </div>
           </div>
@@ -378,33 +378,33 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ЦЕНТР: Статусная строка ===== */}
-      <div className={`absolute left-1/2 -translate-x-1/2 ${isMobile ? 'bottom-24' : 'bottom-4'}`}>
-        <div className={`flex items-center ${isMobile ? 'gap-1.5 px-2 py-1' : 'gap-3 px-4 py-1.5'} rounded-full`} style={{ background: 'rgba(0,20,10,0.5)', border: '1px solid rgba(0,255,136,0.15)' }}>
-          <span className={isMobile ? 'text-[7px]' : 'text-[9px]'} style={{ color: 'rgba(0,255,136,0.6)' }}>
+      <div className={`absolute left-1/2 -translate-x-1/2 ${isMobile ? 'bottom-28' : 'bottom-4'}`}>
+        <div className={`flex items-center ${isMobile ? 'gap-1 px-1.5 py-0.5' : 'gap-3 px-4 py-1.5'} rounded-full`} style={{ background: 'rgba(0,20,10,0.5)', border: '1px solid rgba(0,255,136,0.15)' }}>
+          <span className={isMobile ? 'text-[6px]' : 'text-[9px]'} style={{ color: 'rgba(0,255,136,0.6)' }}>
             АПГ {safeNum(apogee, 0)} / ППГ {safeNum(perigee, 0)}
           </span>
-          <div className="w-px h-2.5" style={{ background: 'rgba(0,255,136,0.2)' }} />
-          <span className={isMobile ? 'text-[7px]' : 'text-[9px]'} style={{ color: 'rgba(0,255,136,0.6)' }}>
+          <div className="w-px h-2" style={{ background: 'rgba(0,255,136,0.2)' }} />
+          <span className={isMobile ? 'text-[6px]' : 'text-[9px]'} style={{ color: 'rgba(0,255,136,0.6)' }}>
             ПЕР {safeNum(period, 0)} мин
           </span>
-          <div className="w-px h-2.5" style={{ background: 'rgba(0,255,136,0.2)' }} />
-          <span className={`${isMobile ? 'text-[7px]' : 'text-[9px]'} font-bold`} style={{ color: thrust ? '#00ccff' : 'rgba(0,255,136,0.4)' }}>
+          <div className="w-px h-2" style={{ background: 'rgba(0,255,136,0.2)' }} />
+          <span className={`${isMobile ? 'text-[6px]' : 'text-[9px]'} font-bold`} style={{ color: thrust ? '#00ccff' : 'rgba(0,255,136,0.4)' }}>
             {thrust ? '■ ТЯГА' : '□ ПОЛЁТ'}
           </span>
         </div>
       </div>
 
       {/* ===== НИЖНЯЯ ПРАВАЯ: Топливо ===== */}
-      <div className={`absolute ${isMobile ? 'right-1.5 bottom-32' : 'right-3 bottom-16'}`}>
-        <div className={`${isMobile ? 'px-1.5 py-1' : 'px-2.5 py-2'} rounded`} style={PANEL}>
-          <div className={`flex items-center ${isMobile ? 'gap-1' : 'gap-2 mb-1'}`}>
-            <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ТОПЛ</div>
-            <div className={`${isMobile ? 'text-[8px]' : 'text-[10px]'} font-bold`} style={{ color: fuelColor }}>
+      <div className={`absolute ${isMobile ? 'right-1 bottom-36' : 'right-3 bottom-16'}`}>
+        <div className={`${isMobile ? 'px-1 py-0.5' : 'px-2.5 py-2'} rounded`} style={PANEL}>
+          <div className={`flex items-center ${isMobile ? 'gap-0.5' : 'gap-2 mb-1'}`}>
+            <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ТПЛ</div>
+            <div className={`${isMobile ? 'text-[7px]' : 'text-[10px]'} font-bold`} style={{ color: fuelColor }}>
               {safeNum(fuelMass, 1)} кг
             </div>
           </div>
           {/* Полоса топлива */}
-          <div className={`${isMobile ? 'w-12 h-1' : 'w-20 h-1.5'} rounded-sm overflow-hidden`} style={{ background: 'rgba(0,255,136,0.1)' }}>
+          <div className={`${isMobile ? 'w-9 h-1' : 'w-20 h-1.5'} rounded-sm overflow-hidden`} style={{ background: 'rgba(0,255,136,0.1)' }}>
             <div className="h-full rounded-sm transition-all duration-500" style={{
               width: `${Math.min(100, fuelPercent)}%`,
               background: fuelColor,
@@ -416,39 +416,39 @@ export default function CockpitHUD() {
       {/* ===== МОБИЛЬНЫЕ КНОПКИ: Камера + Курс/Таймер + Пауза ===== */}
       {isMobile && (
         <div className="absolute top-0 left-0 right-0 pointer-events-auto z-50" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
-          <div className="flex items-center justify-between px-1.5 py-1">
-            {/* Камера — цикл переключения */}
+          <div className="flex items-center justify-between px-1 py-0.5">
+            {/* Камера — цикл переключения — ультракомпакт */}
             <button
               onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); cycleCamera(); }}
-              className="px-1.5 py-1 rounded flex items-center gap-0.5 active:scale-95 transition-all"
+              className="px-1 py-0.5 rounded flex items-center gap-px active:scale-95 transition-all"
               style={{ background: 'rgba(0,20,10,0.7)', border: '1px solid rgba(0,255,136,0.3)' }}
             >
-              <span className="text-[10px]">📷</span>
-              <span className="text-[7px] font-bold" style={{ color: VALUE_CLR }}>КАМЕРА</span>
+              <span className="text-[8px]">📷</span>
+              <span className="text-[6px] font-bold" style={{ color: VALUE_CLR }}>КАМ</span>
             </button>
-            {/* Курс + Таймер + Warp */}
-            <div className="flex items-center gap-1">
+            {/* Курс + Таймер + Warp — ультракомпакт */}
+            <div className="flex items-center gap-0.5">
               {timeWarp > 1 && (
-                <div className="px-1 py-0.5 rounded text-[7px] font-bold" style={{ color: WARN_CLR, border: `1px solid rgba(255,204,0,0.4)`, background: 'rgba(255,204,0,0.1)' }}>
+                <div className="px-0.5 py-px rounded text-[6px] font-bold" style={{ color: WARN_CLR, border: `1px solid rgba(255,204,0,0.4)`, background: 'rgba(255,204,0,0.1)' }}>
                   ×{timeWarp}
                 </div>
               )}
-              <div className="px-1.5 py-0.5 rounded" style={PANEL}>
-                <span className="text-[7px]" style={{ color: LABEL_CLR }}>КУРС</span>
-                <span className="text-[8px] font-bold" style={{ color: VALUE_CLR }}>{safeNum(heading, 0).padStart(3, '0')}°</span>
+              <div className="px-1 py-px rounded" style={PANEL}>
+                <span className="text-[6px]" style={{ color: LABEL_CLR }}>К</span>
+                <span className="text-[7px] font-bold" style={{ color: VALUE_CLR }}>{safeNum(heading, 0).padStart(3, '0')}°</span>
               </div>
-              <div className="px-1.5 py-0.5 rounded" style={PANEL}>
-                <span className="text-[7px]" style={{ color: LABEL_CLR }}>ОСТ</span>
-                <span className="text-[8px] font-bold" style={{ color: timeRemaining < 60 ? CRIT_CLR : VALUE_CLR }}>{timerStr}</span>
+              <div className="px-1 py-px rounded" style={PANEL}>
+                <span className="text-[6px]" style={{ color: LABEL_CLR }}>ОСТ</span>
+                <span className="text-[7px] font-bold" style={{ color: timeRemaining < 60 ? CRIT_CLR : VALUE_CLR }}>{timerStr}</span>
               </div>
             </div>
-            {/* Пауза */}
+            {/* Пауза — ультракомпакт */}
             <button
               onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); useGameStore.getState().pauseGame(); }}
-              className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+              className="w-5 h-5 rounded flex items-center justify-center active:scale-95 transition-all"
               style={{ background: 'rgba(0,20,10,0.7)', border: '1px solid rgba(0,255,136,0.3)' }}
             >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <svg width="8" height="8" viewBox="0 0 12 12" fill="none">
                 <rect x="1.5" y="1.5" width="3" height="9" rx="0.5" fill="#00ff88" />
                 <rect x="7.5" y="1.5" width="3" height="9" rx="0.5" fill="#00ff88" />
               </svg>

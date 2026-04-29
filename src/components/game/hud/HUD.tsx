@@ -237,11 +237,11 @@ export default function HUD({ distanceToTarget, relativeSpeed, timeRemaining, ca
       {isMobile && (
       <div className="absolute top-0 left-0 right-0 pointer-events-auto z-20">
         {/* Row 1: Single unified top bar — all essential info in one line */}
-        <div className="flex items-center justify-between gap-0.5 px-1 py-0.5">
+        <div className="flex items-center justify-between gap-px px-1 py-px">
           {/* Fullscreen toggle */}
           <MobileFullscreenButton />
-          {/* Telemetry block: H/V/i */}
-          <div className="flex items-center gap-0.5 text-[8px] font-mono shrink-0">
+          {/* Telemetry block: H/V/i — ultra compact */}
+          <div className="flex items-center gap-px text-[7px] font-mono shrink-0">
             <span className="text-gray-500">H</span><span className="text-cyan-400 font-bold">{orbInfo.altitude.toFixed(0)}</span>
             <span className="text-gray-600">·</span>
             <span className="text-gray-500">V</span><span className="text-white">{orbInfo.speed.toFixed(0)}</span>
@@ -249,38 +249,38 @@ export default function HUD({ distanceToTarget, relativeSpeed, timeRemaining, ca
             <span className="text-gray-500">i</span><span className="text-amber-400">{orbInfo.inclination.toFixed(1)}°</span>
           </div>
           {/* Fuel mini-bar */}
-          <div className="flex items-center gap-1 shrink-0">
-            <div className="w-8 h-1 bg-gray-800 rounded-full overflow-hidden">
+          <div className="flex items-center gap-0.5 shrink-0">
+            <div className="w-6 h-1 bg-gray-800 rounded-full overflow-hidden">
               <div className={`h-full rounded-full transition-all ${fuelBg}`} style={{ width: `${Math.max(0, fuelPercent)}%` }} />
             </div>
-            <span className={`text-[8px] font-mono font-bold ${fuelColor}`}>{fuelPercent.toFixed(0)}%</span>
+            <span className={`text-[7px] font-mono font-bold ${fuelColor}`}>{fuelPercent.toFixed(0)}%</span>
           </div>
           {/* Timer */}
-          <span className={`text-[10px] font-mono font-bold ${timeColor} shrink-0`}>{mins}:{secs.toString().padStart(2, '0')}</span>
-          {/* Camera + Pause buttons — compact for mobile */}
-          <div className="flex items-center gap-0.5 shrink-0">
+          <span className={`text-[9px] font-mono font-bold ${timeColor} shrink-0`}>{mins}:{secs.toString().padStart(2, '0')}</span>
+          {/* Camera + Pause buttons — ultra compact */}
+          <div className="flex items-center gap-px shrink-0">
             {(['cockpit', 'tug', 'target', 'orbital'] as const).map((view) => {
               const labels: Record<string, string> = { cockpit: '📷', tug: '🚀', target: '🎯', orbital: '🌍' };
               return (
                 <button
                   key={view}
                   onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setCameraView(view); }}
-                  className={`w-6 h-6 rounded flex items-center justify-center transition-all ${
+                  className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
                     cameraView === view
                       ? 'bg-cyan-500/30 border border-cyan-400/60 shadow-sm shadow-cyan-500/20'
                       : 'bg-black/60 border border-white/15 active:bg-white/10'
                   }`}
                 >
-                  <span className="text-[10px] leading-none">{labels[view]}</span>
+                  <span className="text-[8px] leading-none">{labels[view]}</span>
                 </button>
               );
             })}
             <button
               onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().pauseGame(); }}
-              className="w-6 h-6 rounded bg-black/60 border border-white/15 flex items-center justify-center active:bg-white/10 transition-all"
+              className="w-5 h-5 rounded bg-black/60 border border-white/15 flex items-center justify-center active:bg-white/10 transition-all"
               title="Пауза"
             >
-              <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
+              <svg width="7" height="7" viewBox="0 0 12 12" fill="none">
                 <rect x="2" y="1.5" width="3" height="9" rx="0.5" fill="#9ca3af" />
                 <rect x="7" y="1.5" width="3" height="9" rx="0.5" fill="#9ca3af" />
               </svg>
