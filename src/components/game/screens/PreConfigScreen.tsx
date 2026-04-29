@@ -349,7 +349,7 @@ function NanoSatConfigStep({
       </div>
 
       {/* Scrollable content area */}
-      <div className="pr-1 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner">
+      <div className="pr-1 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner max-h-[50vh] overflow-y-auto">
         <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-5 mb-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-bold text-white">
@@ -695,7 +695,7 @@ function DebrisConfigStep({
       </div>
 
       {/* Scrollable content — single scroll context, no nesting conflicts */}
-      <div className="scroll-inner pr-1 md:flex-1 md:overflow-y-auto md:min-h-0">
+      <div className="scroll-inner pr-1 md:flex-1 md:overflow-y-auto md:min-h-0 max-h-[50vh] overflow-y-auto">
         <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-5 mb-4">
           <h3 className="text-lg font-bold text-white mb-3">
             Цель #{activeIndex + 1}
