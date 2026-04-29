@@ -257,6 +257,10 @@ export interface GameState {
   /** Масса захваченного мусора (кг) */
   capturedMass: number;
 
+  // ---- Рестарт --------------------------------------------------
+  /** Версия рестарта — увеличивается при каждом рестарте миссии */
+  restartVersion: number;
+
   // ---- Многоцелевые миссии -----------------------------------------
   /** List of targets for multi-target missions */
   missionTargets: MissionTargetConfig[];
@@ -385,6 +389,9 @@ const initialState: GameState = {
   selectedSatCount: 1,
   capturedMass: 0,
 
+  // Рестарт
+  restartVersion: 0,
+
   // Многоцелевые миссии
   missionTargets: [],
   currentTargetIndex: 0,
@@ -490,6 +497,8 @@ export interface GameActions {
   // ---- Сброс -----------------------------------------------------
   /** Полный сброс игрового состояния */
   resetGame: () => void;
+  /** Рестарт текущей миссии (сбросить прогресс, но сохранить миссию и настройки) */
+  restartMission: () => void;
 
   // ---- Джойстик --------------------------------------------------
   /** Установить статус подключения джойстика */
@@ -856,6 +865,77 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // ============================================================
   // Сброс
   // ============================================================
+
+  restartMission: () => {
+    const state = get();
+    // Сохраняем текущую миссию, режим, настройки буксира и версию
+    const currentMissionId = state.currentMissionId;
+    const currentMission = state.currentMission;
+    const gameMode = state.gameMode;
+    const tugFuelReserve = state.tugFuelReserve;
+    const tugPayloadMass = 0; // сбрасываем захваченный мусор
+    const tugThrustOverride = state.tugThrustOverride;
+    const tugIspOverride = state.tugIspOverride;
+    const missionTargets = state.missionTargets;
+    const isCustom = !currentMissionId && missionTargets.length > 0;
+
+    // Пересчитываем delta-V
+    const tugSpec = gameMode === 'nanosat' ? DEPLOYER_TUG : JANITOR_TUG;
+    const g0 = 9.80665;
+    const totalMass = tugSpec.dryMass + tugFuelReserve;
+    const maxDv = tugSpec.isp * g0 * Math.log(totalMass / tugSpec.dryMass);
+
+    set({
+      // Сохраняем настройки и миссию
+      currentMissionId,
+      currentMission,
+      gameMode,
+      missionTargets,
+      // Сохраняем пользовательские настройки
+      tugFuelReserve,
+      tugThrustOverride,
+      tugIspOverride,
+      // Топливо и delta-V — сброс
+      fuelMass: tugFuelReserve,
+      initialFuelMass: tugFuelReserve,
+      maxDeltaV: maxDv,
+      usedDeltaV: 0,
+      remainingDeltaV: maxDv,
+      // Сбросываем состояние миссии
+      isPaused: false,
+      isGameOver: false,
+      screen: 'playing' as GameScreen,
+      missionTime: 0,
+      thrust: false,
+      tugPayloadMass: 0,
+      // Capture state
+      captureState: 'approaching' as CaptureState,
+      deploymentState: 'approaching' as DeploymentState,
+      capturedDebris: [],
+      capturedMass: 0,
+      canCapture: false,
+      canDeploy: false,
+      captureProgress: 0,
+      deployProgress: 0,
+      deployedSats: 0,
+      currentTargetIndex: 0,
+      // Time warp
+      timeWarp: 1,
+      timeWarpIndex: 0,
+      // Results
+      score: 0,
+      gameResults: { score: 0, debrisCleanedKg: 0, accuracy: 0, fuelEfficiency: 100, timeBonus: 0, rating: 'F' as GameResults['rating'] },
+      // Время
+      timeRemaining: isCustom
+        ? (gameMode === 'janitor' ? 300 + missionTargets.length * 180 : 240 + missionTargets.length * 120)
+        : (currentMission?.timeLimit ?? 300),
+      // Инкрементируем версию рестарта для триггера в Game.tsx
+      restartVersion: state.restartVersion + 1,
+      // Закрываем панели
+      showSettings: false,
+      showTugConfig: false,
+    });
+  },
 
   resetGame: () => {
     // Use spread of initialState but ensure complex nested objects are fresh copies

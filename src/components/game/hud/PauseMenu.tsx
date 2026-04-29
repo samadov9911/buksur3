@@ -67,6 +67,17 @@ function PausePanel() {
         <PauseButton
           icon={
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M4 2 L4 18 L11 11 L11 18 L18 2 L18 18" stroke="#38bdf8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </svg>
+          }
+          label="Рестарт"
+          shortcut="R"
+          onClick={() => gs().restartMission()}
+        />
+
+        <PauseButton
+          icon={
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
               <circle cx="10" cy="10" r="3" stroke="#60a5fa" strokeWidth="1.5" fill="none" />
               <circle cx="10" cy="3" r="1.5" fill="#60a5fa" />
               <circle cx="16.5" cy="13" r="1.5" fill="#60a5fa" />
@@ -130,7 +141,7 @@ function PausePanel() {
       {/* Подсказка управления */}
       <div className="mt-6 pt-4 border-t border-gray-800 safe-bottom">
         <p className="text-center text-xs text-gray-500">
-          Продолжить &bull; Настройки &bull; Характеристики &bull; Выход
+          Продолжить &bull; Рестарт &bull; Настройки &bull; Характеристики &bull; Выход
         </p>
       </div>
     </div>

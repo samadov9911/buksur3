@@ -129,6 +129,7 @@ export default function Game() {
   const isPaused = useGameStore(s => s.isPaused);
   const isMobile = useIsMobile();
   const currentMissionId = useGameStore(s => s.currentMissionId);
+  const restartVersion = useGameStore(s => s.restartVersion);
   const cameraView = useGameStore(s => s.cameraView);
   const gameMode = useGameStore(s => s.gameMode);
   const captureType = useGameStore(s => s.captureType);
@@ -397,6 +398,9 @@ export default function Game() {
           if (e.code === 'KeyS') gs.toggleSettings();
           if (e.code === 'KeyC') gs.toggleSettings();
           if (e.code === 'KeyT') gs.toggleTugConfig();
+          if (e.code === 'KeyR') {
+            gs.restartMission();
+          }
           if (e.code === 'KeyQ') {
             gs.resetGame();
           }
@@ -414,6 +418,15 @@ export default function Game() {
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
+
+  // При рестарте — сбрасываем кэш инициализации миссии и таймер игрового цикла
+  useEffect(() => {
+    if (restartVersion === 0) return;
+    // Сбрасываем ref чтобы useEffect миссии заново вызвал initMission
+    lastInitMissionRef.current = null;
+    // Сбрасываем таймер чтобы не было огромного deltaTime в первом кадре
+    lastTimeRef.current = 0;
+  }, [restartVersion]);
 
   // Инициализация миссии
   useEffect(() => {
@@ -505,7 +518,7 @@ export default function Game() {
     } catch (err) {
       console.error('[MissionInit Error]', err);
     }
-  }, [screen, currentMissionId]);
+  }, [screen, currentMissionId, restartVersion]);
 
   // Игровой цикл
   useEffect(() => {
