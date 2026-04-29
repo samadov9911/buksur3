@@ -614,6 +614,13 @@ export default function Game() {
             targetDebrisType: debrisVisualRef.current.type,
             orbitPath: Array.isArray(result.orbitPath) ? result.orbitPath : [],
           }));
+
+          // Обновляем store ориентации буксира для HUD (реальные углы из движка)
+          gs.updateTugRotation({
+            pitch: Number.isFinite(result.tugPitch) ? result.tugPitch : 0,
+            yaw: Number.isFinite(result.tugYaw) ? result.tugYaw : 0,
+            roll: Number.isFinite(result.tugRoll) ? result.tugRoll : 0,
+          });
         }
       } catch (err) {
         // Prevent game loop errors from crashing the entire app (critical for mobile)

@@ -86,10 +86,15 @@ export default function CockpitHUD() {
     };
   }, [orbInfo, gameMode, currentMissionId, missionTargets, currentTargetIndex]);
 
-  // ---- Ориентация ----
-  const pitchDeg = tugRotation?.pitch ?? 0;
-  const yawDeg = tugRotation?.yaw ?? 0;
-  const rollDeg = tugRotation?.roll ?? 0;
+  // ---- Ориентация (рад → градусы) ----
+  const pitchDeg = Number.isFinite(tugRotation?.pitch ?? 0) ? tugRotation.pitch : 0;
+  const yawDeg = Number.isFinite(tugRotation?.yaw ?? 0) ? tugRotation.yaw : 0;
+  const rollDeg = Number.isFinite(tugRotation?.roll ?? 0) ? tugRotation.roll : 0;
+
+  // Реальные углы по осям X, Y, Z в градусах (из движка: pitch → X, yaw → Y, roll → Z)
+  const rotX = pitchDeg * 180 / Math.PI;
+  const rotY = yawDeg * 180 / Math.PI;
+  const rotZ = rollDeg * 180 / Math.PI;
 
   // ---- Цвет отклонений ----
   const altDevColor = Math.abs(altDev) < 5 ? VALUE_CLR : Math.abs(altDev) < 30 ? WARN_CLR : CRIT_CLR;
@@ -116,9 +121,6 @@ export default function CockpitHUD() {
 
   // ---- Курс ----
   const heading = (((yawDeg * 180 / Math.PI) % 360) + 360) % 360;
-
-  // ---- Крен визуальный ----
-  const rollVisual = tugRotation?.roll ?? 0;
 
   // ---- Безопасные значения orbInfo ----
   const altitude = Number.isFinite(orbInfo.altitude) ? orbInfo.altitude : 0;
@@ -312,21 +314,21 @@ export default function CockpitHUD() {
           </div>
         </div>
 
-        {/* Ориентация: Тангаж, Крен, Рыскание */}
+        {/* Ориентация: X, Y, Z */}
         <div className="px-2 py-1 rounded text-right" style={PANEL}>
           <div className="text-[8px] mb-0.5" style={{ color: LABEL_CLR }}>ОРИЕНТАЦИЯ</div>
           <div className="flex items-center justify-end gap-2">
             <div>
-              <div className="text-[7px]" style={{ color: LABEL_CLR }}>ТАНГАЖ</div>
-              <div className="text-[10px] font-bold" style={{ color: VALUE_CLR }}>{safeNum(pitchDeg * 180 / Math.PI, 1)}°</div>
+              <div className="text-[7px]" style={{ color: LABEL_CLR }}>X</div>
+              <div className="text-[10px] font-bold" style={{ color: VALUE_CLR }}>{safeNum(rotX, 1)}°</div>
             </div>
             <div>
-              <div className="text-[7px]" style={{ color: LABEL_CLR }}>КРЕН</div>
-              <div className="text-[10px] font-bold" style={{ color: VALUE_CLR }}>{safeNum(rollDeg * 180 / Math.PI, 1)}°</div>
+              <div className="text-[7px]" style={{ color: LABEL_CLR }}>Y</div>
+              <div className="text-[10px] font-bold" style={{ color: VALUE_CLR }}>{safeNum(rotY, 1)}°</div>
             </div>
             <div>
-              <div className="text-[7px]" style={{ color: LABEL_CLR }}>РЫСК</div>
-              <div className="text-[10px] font-bold" style={{ color: VALUE_CLR }}>{safeNum(yawDeg * 180 / Math.PI, 1)}°</div>
+              <div className="text-[7px]" style={{ color: LABEL_CLR }}>Z</div>
+              <div className="text-[10px] font-bold" style={{ color: VALUE_CLR }}>{safeNum(rotZ, 1)}°</div>
             </div>
           </div>
         </div>
