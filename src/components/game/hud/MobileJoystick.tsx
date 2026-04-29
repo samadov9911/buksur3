@@ -10,9 +10,8 @@
  */
 'use client';
 
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { useGameStore } from '@/game/store/gameStore';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 function useIsPortrait() {
   const [isPortrait, setIsPortrait] = useState(false);
@@ -67,19 +66,19 @@ function VirtualJoystick({
 
   const colorClasses = {
     cyan: {
-      base: 'border-cyan-500/30 bg-cyan-950/25',
-      stick: 'bg-cyan-400/60 border-cyan-400/50',
-      label: 'text-cyan-500/60',
+      base: 'border-cyan-500/50 bg-cyan-950/40',
+      stick: 'bg-cyan-400/80 border-cyan-400/70',
+      label: 'text-cyan-400/80',
     },
     amber: {
-      base: 'border-amber-500/30 bg-amber-950/25',
-      stick: 'bg-amber-400/60 border-amber-400/50',
-      label: 'text-amber-500/60',
+      base: 'border-amber-500/50 bg-amber-950/40',
+      stick: 'bg-amber-400/80 border-amber-400/70',
+      label: 'text-amber-400/80',
     },
     emerald: {
-      base: 'border-emerald-500/30 bg-emerald-950/25',
-      stick: 'bg-emerald-400/60 border-emerald-400/50',
-      label: 'text-emerald-500/60',
+      base: 'border-emerald-500/50 bg-emerald-950/40',
+      stick: 'bg-emerald-400/80 border-emerald-400/70',
+      label: 'text-emerald-400/80',
     },
   };
 
@@ -212,15 +211,19 @@ function VirtualJoystick({
       <div
         ref={containerRef}
         className={`relative rounded-full border ${cc.base}`}
-        style={{ width: baseSize, height: baseSize }}
+        style={{
+          width: baseSize,
+          height: baseSize,
+          boxShadow: `0 0 16px rgba(${color === 'cyan' ? '0,200,255' : color === 'amber' ? '250,180,0' : '50,220,150'},0.15), inset 0 0 12px rgba(${color === 'cyan' ? '0,200,255' : color === 'amber' ? '250,180,0' : '50,220,150'},0.08)`,
+        }}
         onTouchStart={handleStart}
         onTouchMove={handleMove}
         onTouchEnd={handleEnd}
         onTouchCancel={handleEnd}
       >
         {/* Crosshair guides */}
-        <div className="absolute top-1/2 left-2 right-2 h-px bg-white/5 -translate-y-1/2" />
-        <div className="absolute left-1/2 top-2 bottom-2 w-px bg-white/5 -translate-x-1/2" />
+        <div className="absolute top-1/2 left-2 right-2 h-px bg-white/10 -translate-y-1/2" />
+        <div className="absolute left-1/2 top-2 bottom-2 w-px bg-white/10 -translate-x-1/2" />
 
         {/* Stick */}
         <div
@@ -364,8 +367,23 @@ function RollButtons({ isPortrait }: { isPortrait: boolean }) {
   );
 }
 
+/** Detect touch-capable mobile device (works in portrait AND landscape) */
+function useIsTouchDevice() {
+  // useSyncExternalStore avoids the setState-in-effect lint warning
+  // and is the recommended React pattern for client-only derived values
+  return useSyncExternalStore(
+    () => () => {}, // subscribe — no-op, touch capability doesn't change at runtime
+    () => {
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isMobileUA = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      return hasTouch && (isMobileUA || window.innerWidth < 1024);
+    },
+    () => false, // SSR fallback
+  );
+}
+
 export default function MobileJoystick({ onOrientation, onThrust, onRoll }: MobileJoystickProps) {
-  const isMobile = useIsMobile();
+  const isMobile = useIsTouchDevice();
   const isPortrait = useIsPortrait();
   const orientationRef = useRef(onOrientation);
   const thrustRef = useRef(onThrust);
@@ -392,7 +410,7 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
   const joystickStick = isPortrait ? 32 : 38;
 
   return (
-    <div className="absolute inset-0 pointer-events-none z-30">
+    <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 40 }}>
       {/* ═══════════════════════════════════════════════════════
            BOTTOM-LEFT: Orientation joystick + Roll buttons
            BOTTOM-RIGHT: Thrust + orbital adjustment buttons
