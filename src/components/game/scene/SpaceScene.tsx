@@ -1024,22 +1024,6 @@ function SolarPanelAssembly({ side }: { side: 'left' | 'right' }) {
           <boxGeometry args={[0.061, 0.0003, 0.029]} />
           <meshPhongMaterial color="#888888" specular="#bbbbbb" shininess={50} />
         </mesh>
-
-        {/* Cross braces on back */}
-        <mesh position={[0, -0.0004, 0]} rotation={[0, 0, 0]}>
-          <boxGeometry args={[0.06, 0.0002, 0.001]} />
-          <meshPhongMaterial color="#666666" specular="#888888" shininess={40} />
-        </mesh>
-        <mesh position={[0, -0.0004, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <boxGeometry args={[0.028, 0.0002, 0.001]} />
-          <meshPhongMaterial color="#666666" specular="#888888" shininess={40} />
-        </mesh>
-
-        {/* Hinge mechanism at boom attachment point */}
-        <mesh position={[xSign * -0.028, 0, 0]}>
-          <boxGeometry args={[0.004, 0.002, 0.004]} />
-          <meshPhongMaterial color="#999999" specular="#cccccc" shininess={60} />
-        </mesh>
       </group>
     </group>
   );
