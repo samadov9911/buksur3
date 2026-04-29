@@ -14,6 +14,7 @@
 
 import { useMemo } from 'react';
 import { useGameStore } from '@/game/store/gameStore';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { getMissionById } from '@/game/data/missions';
 import { ORBIT_TYPES } from '@/game/engine/constants';
 
@@ -51,6 +52,15 @@ export default function CockpitHUD() {
   const distanceToTarget = useGameStore(s => s.distanceToTarget);
   const relativeSpeed = useGameStore(s => s.relativeSpeed);
   const missionTime = useGameStore(s => s.missionTime);
+  const cameraView = useGameStore(s => s.cameraView);
+  const isMobile = useIsMobile();
+
+  // ---- Цикл переключения камеры (мобильная кнопка) ----
+  const cycleCamera = () => {
+    const views: Array<'cockpit' | 'tug' | 'target' | 'orbital'> = ['cockpit', 'tug', 'target', 'orbital'];
+    const idx = views.indexOf(cameraView);
+    useGameStore.getState().setCameraView(views[(idx + 1) % views.length]);
+  };
 
   // ---- Целевая орбита ----
   const { targetAltKm, targetInc, altDev, incDev } = useMemo(() => {
@@ -140,7 +150,8 @@ export default function CockpitHUD() {
         }}
       />
 
-      {/* ===== ВЕРХНЯЯ ПАНЕЛЬ: Курс + Таймер + Warp + Режим ===== */}
+      {/* ===== ВЕРХНЯЯ ПАНЕЛЬ: Курс + Таймер + Warp + Режим (desktop only) ===== */}
+      {!isMobile && (
       <div className="absolute top-2 left-1/2 -translate-x-1/2">
         <div className="flex items-center gap-2">
           {/* Режим */}
@@ -176,6 +187,7 @@ export default function CockpitHUD() {
           </div>
         </div>
       </div>
+      )}
 
       {/* ===== ЦЕНТР: Прицел + Стрелка тяги ===== */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -346,7 +358,7 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ЛЕВАЯ: ΔV запас ===== */}
-      <div className="absolute bottom-16 left-3">
+      <div className={`absolute left-3 ${isMobile ? 'bottom-28' : 'bottom-16'}`}>
         <div className="px-2.5 py-2 rounded" style={PANEL}>
           <div className="flex items-center gap-2">
             <div className="text-[8px]" style={{ color: LABEL_CLR }}>ΔV</div>
@@ -365,7 +377,7 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ЦЕНТР: Статусная строка ===== */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+      <div className={`absolute left-1/2 -translate-x-1/2 ${isMobile ? 'bottom-20' : 'bottom-4'}`}>
         <div className="flex items-center gap-3 px-4 py-1.5 rounded-full" style={{ background: 'rgba(0,20,10,0.5)', border: '1px solid rgba(0,255,136,0.15)' }}>
           <span className="text-[9px]" style={{ color: 'rgba(0,255,136,0.6)' }}>
             АПГ {safeNum(apogee, 0)} / ППГ {safeNum(perigee, 0)} км
@@ -382,7 +394,7 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ПРАВАЯ: Топливо ===== */}
-      <div className="absolute bottom-16 right-3">
+      <div className={`absolute right-3 ${isMobile ? 'bottom-28' : 'bottom-16'}`}>
         <div className="px-2.5 py-2 rounded" style={PANEL}>
           <div className="flex items-center gap-2 mb-1">
             <div className="text-[8px]" style={{ color: LABEL_CLR }}>ТОПЛИВО</div>
@@ -400,7 +412,52 @@ export default function CockpitHUD() {
         </div>
       </div>
 
-      {/* ===== ВЕРХНИЙ ЛЕВЫЙ УГОЛ: Режим FPV ===== */}
+      {/* ===== МОБИЛЬНЫЕ КНОПКИ: Камера + Курс/Таймер + Пауза ===== */}
+      {isMobile && (
+        <div className="absolute top-0 left-0 right-0 pointer-events-auto z-50" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+          <div className="flex items-center justify-between px-1.5 py-1">
+            {/* Камера — цикл переключения */}
+            <button
+              onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); cycleCamera(); }}
+              className="px-2 py-1.5 rounded-lg flex items-center gap-1 active:scale-95 transition-all"
+              style={{ background: 'rgba(0,20,10,0.7)', border: '1px solid rgba(0,255,136,0.3)' }}
+            >
+              <span className="text-xs">📷</span>
+              <span className="text-[8px] font-bold" style={{ color: VALUE_CLR }}>КАМЕРА</span>
+            </button>
+            {/* Курс + Таймер + Warp */}
+            <div className="flex items-center gap-1">
+              {timeWarp > 1 && (
+                <div className="px-1 py-0.5 rounded text-[7px] font-bold" style={{ color: WARN_CLR, border: `1px solid rgba(255,204,0,0.4)`, background: 'rgba(255,204,0,0.1)' }}>
+                  ×{timeWarp}
+                </div>
+              )}
+              <div className="px-1.5 py-0.5 rounded" style={PANEL}>
+                <span className="text-[7px]" style={{ color: LABEL_CLR }}>КУРС</span>
+                <span className="text-[8px] font-bold" style={{ color: VALUE_CLR }}>{safeNum(heading, 0).padStart(3, '0')}°</span>
+              </div>
+              <div className="px-1.5 py-0.5 rounded" style={PANEL}>
+                <span className="text-[7px]" style={{ color: LABEL_CLR }}>ОСТ</span>
+                <span className="text-[8px] font-bold" style={{ color: timeRemaining < 60 ? CRIT_CLR : VALUE_CLR }}>{timerStr}</span>
+              </div>
+            </div>
+            {/* Пауза */}
+            <button
+              onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); useGameStore.getState().pauseGame(); }}
+              className="w-7 h-7 rounded-lg flex items-center justify-center active:scale-95 transition-all"
+              style={{ background: 'rgba(0,20,10,0.7)', border: '1px solid rgba(0,255,136,0.3)' }}
+            >
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <rect x="1.5" y="1.5" width="3" height="9" rx="0.5" fill="#00ff88" />
+                <rect x="7.5" y="1.5" width="3" height="9" rx="0.5" fill="#00ff88" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== ВЕРХНИЙ ЛЕВЫЙ УГОЛ: Режим FPV (desktop only) ===== */}
+      {!isMobile && (
       <div className="absolute top-2 left-3">
         <div className="px-2 py-1 rounded" style={{ background: 'rgba(0,20,10,0.3)', border: '1px solid rgba(0,255,136,0.1)' }}>
           <span className="text-[8px]" style={{ color: LABEL_CLR }}>
@@ -408,8 +465,10 @@ export default function CockpitHUD() {
           </span>
         </div>
       </div>
+      )}
 
-      {/* ===== ВЕРХНИЙ ПРАВЫЙ УГОЛ: Эксцентриситет ===== */}
+      {/* ===== ВЕРХНИЙ ПРАВЫЙ УГОЛ: Эксцентриситет (desktop only) ===== */}
+      {!isMobile && (
       <div className="absolute top-2 right-3">
         <div className="px-2 py-1 rounded" style={{ background: 'rgba(0,20,10,0.3)', border: '1px solid rgba(0,255,136,0.1)' }}>
           <span className="text-[8px]" style={{ color: LABEL_CLR }}>
@@ -417,6 +476,7 @@ export default function CockpitHUD() {
           </span>
         </div>
       </div>
+      )}
     </div>
   );
 }

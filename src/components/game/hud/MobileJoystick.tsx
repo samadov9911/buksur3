@@ -392,7 +392,7 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
   const joystickStick = isPortrait ? 32 : 38;
 
   return (
-    <div className="absolute inset-0 pointer-events-none z-30" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+    <div className="absolute inset-0 pointer-events-none z-30">
       {/* ═══════════════════════════════════════════════════════
            BOTTOM-LEFT: Orientation joystick + Roll buttons
            BOTTOM-RIGHT: Thrust + orbital adjustment buttons
@@ -400,7 +400,7 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
            ═══════════════════════════════════════════════════════ */}
 
       {/* Left: Orientation joystick + Roll */}
-      <div className="absolute bottom-3 left-2 pointer-events-auto">
+      <div className="absolute left-2 pointer-events-auto" style={{ bottom: 'max(0.75rem, calc(0.75rem + env(safe-area-inset-bottom, 0px)))' }}>
         <VirtualJoystick
           baseSize={joystickBase}
           stickSize={joystickStick}
@@ -412,7 +412,7 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
       </div>
 
       {/* Right: Action buttons */}
-      <div className="absolute bottom-3 right-2 pointer-events-auto">
+      <div className="absolute right-2 pointer-events-auto" style={{ bottom: 'max(0.75rem, calc(0.75rem + env(safe-area-inset-bottom, 0px)))' }}>
         <ActionButtons isPortrait={isPortrait} />
       </div>
 
@@ -474,7 +474,7 @@ function MobileActionButton({ isPortrait }: { isPortrait: boolean }) {
     : 'px-6 py-3.5 text-xs';
 
   return (
-    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 pointer-events-auto z-40">
+    <div className="absolute left-1/2 -translate-x-1/2 pointer-events-auto z-40" style={{ bottom: 'max(0.75rem, calc(0.75rem + env(safe-area-inset-bottom, 0px)))' }}>
       <button
         onTouchStart={(e) => { e.preventDefault(); handleAction(); }}
         className={`rounded-xl border font-bold tracking-wide active:scale-95 transition-all min-h-[48px] ${btnSize} ${colorMap[action.color]}`}
