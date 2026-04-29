@@ -102,7 +102,7 @@ export default function MissionSelect() {
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/70 overflow-hidden" style={{ height: '100dvh', height: '100vh' }}>
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/70">
       <AnimatePresence mode="wait">
         {!selectedMission ? (
           /* ===== СПИСОК МИССИЙ ===== */
@@ -122,7 +122,7 @@ export default function MissionSelect() {
             </div>
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner">
+            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner pb-4">
 
             {/* Custom mission button */}
             <motion.div
@@ -230,7 +230,7 @@ export default function MissionSelect() {
             </button>
 
             {/* Scrollable content area — mission info + capture type selection */}
-            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner">
+            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner pb-4">
               <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-6 mb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <h2 className="text-2xl md:text-3xl font-bold text-white">{selectedMission.name}</h2>
