@@ -303,7 +303,8 @@ export default function MissionSelect() {
                     )}
                   </p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 max-h-[45vh] overflow-y-auto overscroll-contain scroll-inner">
+                  <div className="rounded-xl border border-gray-600/30 bg-gray-900/40 p-2 max-h-[150px] overflow-y-auto overscroll-contain scroll-inner">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3">
                     {captureTypes.map((ct) => {
                       const isSelected = playerCaptureType === ct.type;
                       const isRecommended = ct.type === recommendedCapture;
@@ -340,6 +341,7 @@ export default function MissionSelect() {
                         </motion.div>
                       );
                     })}
+                    </div>
                   </div>
                 </div>
               )}
