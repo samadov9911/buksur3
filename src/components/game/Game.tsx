@@ -24,6 +24,7 @@ import TutorialScreen from './screens/TutorialScreen';
 import ResultsScreen from './screens/ResultsScreen';
 import LeaderboardScreen from './screens/LeaderboardScreen';
 import HUD from './hud/HUD';
+import CockpitHUD from './hud/CockpitHUD';
 import PauseMenu from './hud/PauseMenu';
 import MobileJoystick from './hud/MobileJoystick';
 
@@ -682,17 +683,22 @@ export default function Game() {
         {screen === 'tutorial' && <TutorialScreen />}
         {screen === 'playing' && (
           <>
-            <HUD
-              distanceToTarget={sceneProps.distanceToTarget}
-              relativeSpeed={sceneProps.relativeSpeed}
-              timeRemaining={sceneProps.timeRemaining}
-              canCapture={sceneProps.canCapture}
-              canDeploy={sceneProps.canDeploy}
-              captureProgress={sceneProps.captureProgress}
-              deployProgress={sceneProps.deployProgress}
-              captureState={sceneProps.captureState}
-              deploymentState={sceneProps.deploymentState}
-            />
+            {/* Cockpit HUD — military FPV overlay, replaces standard HUD in cockpit view */}
+            {cameraView === 'cockpit' && !isPaused ? (
+              <CockpitHUD />
+            ) : (
+              <HUD
+                distanceToTarget={sceneProps.distanceToTarget}
+                relativeSpeed={sceneProps.relativeSpeed}
+                timeRemaining={sceneProps.timeRemaining}
+                canCapture={sceneProps.canCapture}
+                canDeploy={sceneProps.canDeploy}
+                captureProgress={sceneProps.captureProgress}
+                deployProgress={sceneProps.deployProgress}
+                captureState={sceneProps.captureState}
+                deploymentState={sceneProps.deploymentState}
+              />
+            )}
             {/* Кнопка паузы — только десктоп (на мобильном есть в MobileJoystick) */}
             {!isMobile && (
             <button

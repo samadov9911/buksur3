@@ -2827,8 +2827,8 @@ export default function SpaceScene({
       {/* Reentry fire effect — visible when altitude < 250km in ANY mode */}
       {altitude < 250_000 && <ReentryFireEffect position={tugPosition} altitude={altitude} />}
 
-      {/* Tug model — TUG_SCALE applied inside each model */}
-        {gameMode === 'nanosat' ? (
+      {/* Tug model — hidden in cockpit view (pilot can't see own hull through canopy) */}
+        {cameraView !== 'cockpit' && (gameMode === 'nanosat' ? (
           <NanosatTug
             position={tugPosition}
             rotation={tugRotation}
@@ -2844,7 +2844,7 @@ export default function SpaceScene({
             thrust={thrust}
             captureType={captureType || 'harpoon'}
           />
-        )}
+        ))}
 
       {/* Tug marker removed — tug model is visible enough */}
 
