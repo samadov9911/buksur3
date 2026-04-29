@@ -1103,14 +1103,14 @@ function PlasmaEngine({ thrust, position = [0, 0, -BODY_D / 2 - 0.002] }: {
         <meshBasicMaterial color="#00aaff" transparent opacity={0.4} />
       </mesh>
 
-      {/* Main flame (bright cyan) */}
-      <mesh ref={flameRef} position={[0, 0, -0.007]} visible={thrust}>
+      {/* Main flame (bright cyan) — aligned with nozzle (-Z in local space) */}
+      <mesh ref={flameRef} position={[0, 0, -0.007]} rotation={[Math.PI / 2, 0, 0]} visible={thrust}>
         <coneGeometry args={[0.0016, 0.008, 8]} />
         <meshBasicMaterial color="#00ccff" transparent opacity={0.8} />
       </mesh>
 
-      {/* Outer flame glow */}
-      <mesh ref={flameOuterRef} position={[0, 0, -0.006]} visible={thrust}>
+      {/* Outer flame glow — aligned with nozzle (-Z in local space) */}
+      <mesh ref={flameOuterRef} position={[0, 0, -0.006]} rotation={[Math.PI / 2, 0, 0]} visible={thrust}>
         <coneGeometry args={[0.0025, 0.01, 8]} />
         <meshBasicMaterial color="#0088ff" transparent opacity={0.3} />
       </mesh>
