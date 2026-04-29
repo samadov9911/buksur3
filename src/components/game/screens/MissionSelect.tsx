@@ -233,8 +233,8 @@ export default function MissionSelect() {
               </button>
             </div>
 
-            {/* Scrollable content area — mission info + capture type + start button */}
-            <div className="px-4 md:px-0 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner">
+            {/* Scrollable content area — mission info card only */}
+            <div className="px-4 md:px-0 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner max-h-[35vh] overflow-y-auto overscroll-contain mb-3">
               {/* Mission info card — compact on mobile */}
               <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-3 md:p-6 mb-3 md:mb-4">
                 <div className="flex items-center gap-2 mb-2 md:mb-3">
@@ -286,10 +286,11 @@ export default function MissionSelect() {
                   )}
                 </div>
               </div>
+            </div>
 
               {/* ===== ВЫБОР ЗАХВАТНОГО УСТРОЙСТВА (только janitor) ===== */}
               {isJanitor && (
-                <div className="mb-3 md:mb-4">
+                <div className="mb-3 md:mb-4 px-4 md:px-0">
                   <h3 className="text-base md:text-lg font-bold text-white mb-0.5 md:mb-1">Выберите захватное устройство</h3>
                   <p className="text-xs md:text-sm text-gray-400 mb-2 md:mb-3">
                     Рекомендован: <span className="text-yellow-400 font-semibold">
@@ -343,8 +344,8 @@ export default function MissionSelect() {
                 </div>
               )}
 
-              {/* ===== КНОПКА СТАРТА — внутри скролла, сразу после карточек ===== */}
-              <div className="flex justify-center pt-2 pb-2">
+              {/* ===== КНОПКА СТАРТА — вне скролла, всегда видна на мобильных ===== */}
+              <div className="flex justify-center pt-2 pb-4 px-4 md:px-0">
                 <button
                   onClick={handleStartMission}
                   onTouchEnd={(e) => { e.preventDefault(); handleStartMission(); }}
@@ -353,7 +354,6 @@ export default function MissionSelect() {
                   🚀 Начать миссию
                 </button>
               </div>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
