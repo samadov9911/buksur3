@@ -122,7 +122,7 @@ export default function MissionSelect() {
             </div>
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner" style={{ paddingBottom: 'max(1rem, calc(1rem + env(safe-area-inset-bottom, 0px)))' }}>
+            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner pb-20 md:pb-4" style={{ paddingBottom: 'max(5rem, calc(5rem + env(safe-area-inset-bottom, 0px)))' }}>
 
             {/* Custom mission button */}
             <motion.div
