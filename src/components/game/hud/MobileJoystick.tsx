@@ -473,15 +473,23 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
            ═══════════════════════════════════════════════════════ */}
       {isPortrait ? (
         <>
-          {/* Right side below ОРНТ panel: Thrust + Action button */}
+          {/* Right side below ОРНТ panel: Thrust only */}
           <div
             className="absolute right-1 pointer-events-auto flex flex-col items-end gap-2"
             style={{ top: 'calc(50% + 100px)' }}
           >
             <ThrustButtons isPortrait={isPortrait} />
-            {/* Action button (ЗАХВАТ/СТЫКОВКА/СНИЖЕНИЕ/ДАЛЕЕ) — below thrust */}
-            <MobileActionButton isPortrait={isPortrait} inline />
           </div>
+
+          {/* Cockpit+Portrait: Action button (ЗАХВАТ/СТЫКОВКА) ABOVE ВЫС panel */}
+          {isCockpitPortrait && (
+            <div
+              className="absolute left-1 pointer-events-auto"
+              style={{ top: 'calc(50% - 7.5rem)' }}
+            >
+              <MobileActionButton isPortrait={isPortrait} inline />
+            </div>
+          )}
 
           {isCockpitPortrait ? (
             /* Cockpit+Portrait: Time warp ABOVE СКР panel, Orbital at bottom-right */
@@ -500,13 +508,15 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
               </div>
             </>
           ) : (
-            /* Regular portrait: Orbital + Time warp at bottom-right */
+            /* Regular portrait: Orbital + Time warp + Action button at bottom-right */
             <div
               className="absolute right-1.5 pointer-events-auto flex flex-col items-center gap-1"
               style={{ bottom: safeBottom }}
             >
               <OrbitalButtons isPortrait={isPortrait} />
               <TimeWarpButtons isPortrait={isPortrait} />
+              {/* Action button below time warp in regular portrait */}
+              <MobileActionButton isPortrait={isPortrait} inline />
             </div>
           )}
         </>
