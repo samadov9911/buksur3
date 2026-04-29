@@ -178,7 +178,7 @@ export default function PreConfigScreen() {
   // ---- RENDER ----
   return (
     <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-hidden">
-      <div className="flex flex-col items-center w-full max-w-4xl px-4 py-6 md:px-8 md:py-8 safe-bottom min-h-0 flex-1 overflow-y-auto scroll-inner">
+      <div className="flex flex-col items-center w-full max-w-4xl px-4 py-6 md:px-8 md:py-8 safe-bottom min-h-0 flex-1 overflow-hidden">
       <AnimatePresence mode="wait">
         {step === 'count' ? (
           <CountStep
@@ -219,7 +219,7 @@ function CountStep({ gameMode, onSelect }: { gameMode: string; onSelect: (count:
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="w-full max-w-2xl text-center"
+      className="w-full max-w-2xl text-center overflow-y-auto scroll-inner flex-1 min-h-0"
     >
       <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
         {gameMode === 'nanosat' ? '🛰 Количество наноспутников' : '🗑 Количество объектов мусора'}
@@ -318,7 +318,7 @@ function NanoSatConfigStep({
       initial={{ opacity: 0, x: 30 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -30 }}
-      className="w-full max-w-4xl flex flex-col"
+      className="w-full max-w-4xl flex flex-col flex-1 min-h-0"
     >
       <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm mb-3 flex items-center gap-1 shrink-0">
         ← Изменить количество
@@ -349,7 +349,7 @@ function NanoSatConfigStep({
       </div>
 
       {/* Scrollable content area */}
-      <div className="flex-1 overflow-y-auto pr-1 min-h-0 scroll-inner">
+      <div className="flex-1 overflow-y-auto pr-1 min-h-0 scroll-inner" style={{ paddingBottom: 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))' }}>
         <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-5 mb-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-bold text-white">
@@ -664,7 +664,7 @@ function DebrisConfigStep({
       initial={{ opacity: 0, x: 30 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -30 }}
-      className="w-full max-w-3xl flex flex-col"
+      className="w-full max-w-3xl flex flex-col flex-1 min-h-0"
     >
       <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm mb-3 flex items-center gap-1 shrink-0">
         ← Изменить количество
@@ -694,17 +694,17 @@ function DebrisConfigStep({
         ))}
       </div>
 
-      {/* Content */}
-      <div className="flex-1 min-h-0">
+      {/* Scrollable content — single scroll context, no nesting conflicts */}
+      <div className="flex-1 overflow-y-auto min-h-0 scroll-inner pr-1" style={{ paddingBottom: 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))' }}>
         <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-5 mb-4">
           <h3 className="text-lg font-bold text-white mb-3">
             Цель #{activeIndex + 1}
           </h3>
 
-          {/* Debris selection grid — scrollable on mobile */}
+          {/* Debris selection grid */}
           <div className="mb-4">
             <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">ОБЪЕКТ МУСОРА</label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[50vh] md:max-h-none overflow-y-auto scroll-inner pr-1">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {DEBRIS_DATABASE.map(debris => {
                 const dc = difficultyColors[debris.difficulty] || difficultyColors[3];
                 const isSelected = activeConfig.debrisId === debris.id;
