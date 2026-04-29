@@ -122,7 +122,7 @@ export default function MissionSelect() {
             </div>
 
             {/* Scrollable content — compact cards on mobile */}
-            <div className="px-4 md:px-0 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner md:pb-4">
+            <div className="px-4 md:px-0 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner md:pb-4 max-h-[40vh] overflow-y-auto">
 
             {/* Custom mission button — compact on mobile */}
             <motion.div
