@@ -485,7 +485,7 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
           {isCockpitPortrait && (
             <div
               className="absolute left-1 pointer-events-auto"
-              style={{ top: 'calc(50% - 7.5rem)' }}
+              style={{ top: 'calc(50% - 7.5rem)', zIndex: 60 }}
             >
               <MobileActionButton isPortrait={isPortrait} inline />
             </div>
@@ -560,15 +560,24 @@ function MobileActionButton({ isPortrait, inline }: { isPortrait: boolean; inlin
 
   const handleAction = () => {
     const gs = useGameStore.getState();
-    if (gameMode === 'janitor') {
-      if (canCapture && captureState === 'approaching') gs.setCaptureState('capturing');
-      if (captureState === 'captured') gs.setCaptureState('deorbiting');
-    } else if (gameMode === 'nanosat') {
-      if (canDeploy && deploymentState === 'approaching') gs.setDeploymentState('aligning');
-      if (deploymentState === 'undocked') {
+    const gm = gs.gameMode;
+    const cs = gs.captureState;
+    const ds = gs.deploymentState;
+    const cd = gs.canDeploy;
+    const cc = gs.canCapture;
+
+    if (gm === 'janitor') {
+      if (cc && cs === 'approaching') gs.setCaptureState('capturing');
+      if (cs === 'captured') gs.setCaptureState('deorbiting');
+    } else if (gm === 'nanosat') {
+      if (cd && ds === 'approaching') gs.setDeploymentState('aligning');
+      if (ds === 'undocked') {
         const remaining = (gs.selectedSatCount || 1) - gs.deployedSats;
         if (remaining > 0) {
           gs.setDeploymentState('approaching');
+        } else {
+          // All sats deployed — complete mission
+          gs.endGame();
         }
       }
     }
@@ -588,6 +597,7 @@ function MobileActionButton({ isPortrait, inline }: { isPortrait: boolean; inlin
     <button
       onTouchStart={(e) => { e.preventDefault(); handleAction(); }}
       className={`rounded-lg border font-bold tracking-wide active:scale-95 transition-all min-h-[36px] ${btnSize} ${colorMap[action.color]}`}
+      style={{ touchAction: 'manipulation' }}
     >
       {action.label}
     </button>
