@@ -479,17 +479,36 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
             style={{ top: 'calc(50% + 100px)' }}
           >
             <ThrustButtons isPortrait={isPortrait} />
+            {/* Action button (ЗАХВАТ/СТЫКОВКА/СНИЖЕНИЕ/ДАЛЕЕ) — below thrust */}
             <MobileActionButton isPortrait={isPortrait} inline />
           </div>
 
-          {/* Bottom-right: Orbital adjustment + Time warp */}
-          <div
-            className="absolute right-1.5 pointer-events-auto flex flex-col items-center gap-1"
-            style={{ bottom: safeBottom }}
-          >
-            <OrbitalButtons isPortrait={isPortrait} />
-            <TimeWarpButtons isPortrait={isPortrait} />
-          </div>
+          {isCockpitPortrait ? (
+            /* Cockpit+Portrait: Time warp ABOVE СКР panel, Orbital at bottom-right */
+            <>
+              <div
+                className="absolute right-1.5 pointer-events-auto"
+                style={{ top: 'calc(50% - 9.5rem)' }}
+              >
+                <TimeWarpButtons isPortrait={isPortrait} />
+              </div>
+              <div
+                className="absolute right-1.5 pointer-events-auto flex flex-col items-center gap-1"
+                style={{ bottom: safeBottom }}
+              >
+                <OrbitalButtons isPortrait={isPortrait} />
+              </div>
+            </>
+          ) : (
+            /* Regular portrait: Orbital + Time warp at bottom-right */
+            <div
+              className="absolute right-1.5 pointer-events-auto flex flex-col items-center gap-1"
+              style={{ bottom: safeBottom }}
+            >
+              <OrbitalButtons isPortrait={isPortrait} />
+              <TimeWarpButtons isPortrait={isPortrait} />
+            </div>
+          )}
         </>
       ) : (
         /* LANDSCAPE: All action buttons at bottom-right, action at bottom-center */
