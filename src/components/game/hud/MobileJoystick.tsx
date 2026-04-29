@@ -385,6 +385,7 @@ function useIsTouchDevice() {
 export default function MobileJoystick({ onOrientation, onThrust, onRoll }: MobileJoystickProps) {
   const isMobile = useIsTouchDevice();
   const isPortrait = useIsPortrait();
+  const cameraView = useGameStore(s => s.cameraView);
   const orientationRef = useRef(onOrientation);
   const thrustRef = useRef(onThrust);
   const rollRef = useRef(onRoll);
@@ -409,28 +410,47 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
   const joystickBase = isPortrait ? 64 : 80;
   const joystickStick = isPortrait ? 26 : 30;
 
+  // In cockpit view + portrait: place joystick under the ЦЕЛЬ panel on the left
+  const isCockpitPortrait = cameraView === 'cockpit' && isPortrait;
+  const safeBottom = 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))';
+
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 40 }}>
       {/* ═══════════════════════════════════════════════════════
            BOTTOM-LEFT: Orientation joystick + Roll buttons
+           In cockpit+portrait: positioned under ЦЕЛЬ panel (left side, ~55% from top)
+           Otherwise: normal bottom-left position
            BOTTOM-RIGHT: Thrust + orbital adjustment buttons
            BOTTOM-CENTER: Context action button (ЗАХВАТ/СТЫКОВКА)
            ═══════════════════════════════════════════════════════ */}
 
       {/* Left: Orientation joystick + Roll */}
-      <div className="absolute left-1.5 pointer-events-auto" style={{ bottom: 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))' }}>
-        <VirtualJoystick
-          baseSize={joystickBase}
-          stickSize={joystickStick}
-          label="ОРИЕНТ"
-          color="cyan"
-          onMove={handleOrientationMove}
-        />
-        <RollButtons isPortrait={isPortrait} />
-      </div>
+      {isCockpitPortrait ? (
+        <div className="absolute left-1 pointer-events-auto" style={{ top: 'calc(50% + 56px)' }}>
+          <VirtualJoystick
+            baseSize={joystickBase}
+            stickSize={joystickStick}
+            label="ОРИЕНТ"
+            color="cyan"
+            onMove={handleOrientationMove}
+          />
+          <RollButtons isPortrait={isPortrait} />
+        </div>
+      ) : (
+        <div className="absolute left-1.5 pointer-events-auto" style={{ bottom: safeBottom }}>
+          <VirtualJoystick
+            baseSize={joystickBase}
+            stickSize={joystickStick}
+            label="ОРИЕНТ"
+            color="cyan"
+            onMove={handleOrientationMove}
+          />
+          <RollButtons isPortrait={isPortrait} />
+        </div>
+      )}
 
       {/* Right: Action buttons */}
-      <div className="absolute right-1.5 pointer-events-auto" style={{ bottom: 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))' }}>
+      <div className="absolute right-1.5 pointer-events-auto" style={{ bottom: safeBottom }}>
         <ActionButtons isPortrait={isPortrait} />
       </div>
 
