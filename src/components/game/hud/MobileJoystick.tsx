@@ -1,12 +1,18 @@
 /**
  * MobileJoystick — virtual controls for smartphones
  * Supports both portrait and landscape orientations
- * Layout:
- *   - Bottom-left: Orientation joystick (pitch/yaw)
- *   - Bottom-left below joystick: Roll buttons (↶/↷)
- *   - Bottom-right: Thrust + orbital adjustment buttons
+ *
+ * Portrait layout:
+ *   - Bottom-left: Orientation joystick (pitch/yaw) + Roll buttons
+ *   - Bottom-right: Orbital adjustment (H±, i±) + Time warp (W±)
+ *   - Right side below ОРНТ panel: Thrust buttons (▲▼) + Action button (ЗАХВАТ/СТЫКОВКА)
+ *
+ * Landscape layout:
+ *   - Bottom-left: Orientation joystick (pitch/yaw) + Roll buttons
+ *   - Bottom-right: Thrust + orbital adjustment + time warp
  *   - Bottom-center: Context action button (ЗАХВАТ/СТЫКОВКА/СНИЖЕНИЕ/ДАЛЕЕ)
- * Camera/pause moved to HUD top bar — no duplicates here
+ *
+ * Cockpit+Portrait: joystick repositioned to left under ЦЕЛЬ panel
  */
 'use client';
 
@@ -241,9 +247,46 @@ function VirtualJoystick({
   );
 }
 
-/** Action buttons for mobile — bottom right area */
-function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
+/** Orbital adjustment buttons — H±, i± */
+function OrbitalButtons({ isPortrait }: { isPortrait: boolean }) {
+  const btnH = isPortrait ? 'h-7' : 'h-8';
+  const btnW = isPortrait ? 'w-7' : 'w-8';
+  const textSize = isPortrait ? 'text-[7px]' : 'text-[8px]';
+
+  return (
+    <div className="grid grid-cols-2 gap-0.5">
+      <button
+        onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestAltitudeChange(10); }}
+        className={`${btnW} ${btnH} rounded flex items-center justify-center font-bold active:scale-90 transition-all bg-emerald-950/30 border border-emerald-500/30 text-emerald-400 active:bg-emerald-500/20 ${textSize}`}
+      >
+        H+
+      </button>
+      <button
+        onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestAltitudeChange(-10); }}
+        className={`${btnW} ${btnH} rounded flex items-center justify-center font-bold active:scale-90 transition-all bg-red-950/30 border border-red-500/30 text-red-400 active:bg-red-500/20 ${textSize}`}
+      >
+        H−
+      </button>
+      <button
+        onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestInclinationChange(1); }}
+        className={`${btnW} ${btnH} rounded flex items-center justify-center font-bold active:scale-90 transition-all bg-amber-950/30 border border-amber-500/30 text-amber-400 active:bg-amber-500/20 ${textSize}`}
+      >
+        i+
+      </button>
+      <button
+        onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestInclinationChange(-1); }}
+        className={`${btnW} ${btnH} rounded flex items-center justify-center font-bold active:scale-90 transition-all bg-orange-950/30 border border-orange-500/30 text-orange-400 active:bg-orange-500/20 ${textSize}`}
+      >
+        i−
+      </button>
+    </div>
+  );
+}
+
+/** Thrust forward/reverse buttons */
+function ThrustButtons({ isPortrait }: { isPortrait: boolean }) {
   const [thrustActive, setThrustActive] = useState(false);
+  const btnH = isPortrait ? 'h-7' : 'h-8';
 
   const handleThrustStart = useCallback(() => {
     setThrustActive(true);
@@ -255,42 +298,9 @@ function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
     useGameStore.getState().setThrust(false);
   }, []);
 
-  // Ultra-compact buttons — 40% smaller
-  const btnH = isPortrait ? 'h-7' : 'h-8';
-  const btnW = isPortrait ? 'w-7' : 'w-8';
-  const textSize = isPortrait ? 'text-[7px]' : 'text-[8px]';
-
   return (
-    <div className="flex flex-col items-center gap-1">
-      {/* Row 1: H+/H- + i+/i- — 2x2 grid */}
-      <div className="grid grid-cols-2 gap-0.5">
-        <button
-          onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestAltitudeChange(10); }}
-          className={`${btnW} ${btnH} rounded flex items-center justify-center font-bold active:scale-90 transition-all bg-emerald-950/30 border border-emerald-500/30 text-emerald-400 active:bg-emerald-500/20 ${textSize}`}
-        >
-          H+
-        </button>
-        <button
-          onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestAltitudeChange(-10); }}
-          className={`${btnW} ${btnH} rounded flex items-center justify-center font-bold active:scale-90 transition-all bg-red-950/30 border border-red-500/30 text-red-400 active:bg-red-500/20 ${textSize}`}
-        >
-          H−
-        </button>
-        <button
-          onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestInclinationChange(1); }}
-          className={`${btnW} ${btnH} rounded flex items-center justify-center font-bold active:scale-90 transition-all bg-amber-950/30 border border-amber-500/30 text-amber-400 active:bg-amber-500/20 ${textSize}`}
-        >
-          i+
-        </button>
-        <button
-          onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestInclinationChange(-1); }}
-          className={`${btnW} ${btnH} rounded flex items-center justify-center font-bold active:scale-90 transition-all bg-orange-950/30 border border-orange-500/30 text-orange-400 active:bg-orange-500/20 ${textSize}`}
-        >
-          i−
-        </button>
-      </div>
-
-      {/* Row 2: Thrust forward/reverse — prominent buttons */}
+    <div className="flex flex-col items-center gap-0.5">
+      <span className="text-[6px] text-cyan-500/50 font-semibold tracking-wider">ТЯГА</span>
       <div className="flex gap-0.5">
         <button
           onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setThrust(true); }}
@@ -317,24 +327,39 @@ function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
           </svg>
         </button>
       </div>
+    </div>
+  );
+}
 
-      {/* Row 3: Time warp — only in portrait (more screen space) */}
-      {isPortrait && (
-        <div className="flex gap-0.5">
-          <button
-            onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().decreaseTimeWarp(); }}
-            className="w-8 h-6 rounded bg-gray-800/40 border border-white/10 flex items-center justify-center text-gray-400 text-[7px] font-bold active:scale-90 transition-all"
-          >
-            W−
-          </button>
-          <button
-            onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().increaseTimeWarp(); }}
-            className="w-8 h-6 rounded bg-gray-800/40 border border-white/10 flex items-center justify-center text-gray-400 text-[7px] font-bold active:scale-90 transition-all"
-          >
-            W+
-          </button>
-        </div>
-      )}
+/** Time warp buttons — portrait only */
+function TimeWarpButtons({ isPortrait }: { isPortrait: boolean }) {
+  if (!isPortrait) return null;
+
+  return (
+    <div className="flex gap-0.5">
+      <button
+        onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().decreaseTimeWarp(); }}
+        className="w-8 h-6 rounded bg-gray-800/40 border border-white/10 flex items-center justify-center text-gray-400 text-[7px] font-bold active:scale-90 transition-all"
+      >
+        W−
+      </button>
+      <button
+        onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().increaseTimeWarp(); }}
+        className="w-8 h-6 rounded bg-gray-800/40 border border-white/10 flex items-center justify-center text-gray-400 text-[7px] font-bold active:scale-90 transition-all"
+      >
+        W+
+      </button>
+    </div>
+  );
+}
+
+/** Action buttons — combines orbital + thrust + time warp (for landscape mode) */
+function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
+  return (
+    <div className="flex flex-col items-center gap-1">
+      <OrbitalButtons isPortrait={isPortrait} />
+      <ThrustButtons isPortrait={isPortrait} />
+      <TimeWarpButtons isPortrait={isPortrait} />
     </div>
   );
 }
@@ -369,16 +394,14 @@ function RollButtons({ isPortrait }: { isPortrait: boolean }) {
 
 /** Detect touch-capable mobile device (works in portrait AND landscape) */
 function useIsTouchDevice() {
-  // useSyncExternalStore avoids the setState-in-effect lint warning
-  // and is the recommended React pattern for client-only derived values
   return useSyncExternalStore(
-    () => () => {}, // subscribe — no-op, touch capability doesn't change at runtime
+    () => () => {},
     () => {
       const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
       const isMobileUA = /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
       return hasTouch && (isMobileUA || window.innerWidth < 1024);
     },
-    () => false, // SSR fallback
+    () => false,
   );
 }
 
@@ -406,25 +429,20 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
 
   if (!isMobile) return null;
 
-  // Ultra-compact sizes: 40% smaller
   const joystickBase = isPortrait ? 64 : 80;
   const joystickStick = isPortrait ? 26 : 30;
 
-  // In cockpit view + portrait: place joystick under the ЦЕЛЬ panel on the left
   const isCockpitPortrait = cameraView === 'cockpit' && isPortrait;
   const safeBottom = 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))';
 
   return (
     <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 40 }}>
       {/* ═══════════════════════════════════════════════════════
-           BOTTOM-LEFT: Orientation joystick + Roll buttons
-           In cockpit+portrait: positioned under ЦЕЛЬ panel (left side, ~55% from top)
+           LEFT: Orientation joystick + Roll buttons
+           Cockpit+Portrait: joystick under ЦЕЛЬ panel (left side)
            Otherwise: normal bottom-left position
-           BOTTOM-RIGHT: Thrust + orbital adjustment buttons
-           BOTTOM-CENTER: Context action button (ЗАХВАТ/СТЫКОВКА)
            ═══════════════════════════════════════════════════════ */}
 
-      {/* Left: Orientation joystick + Roll */}
       {isCockpitPortrait ? (
         <div className="absolute left-1 pointer-events-auto" style={{ top: 'calc(50% + 56px)' }}>
           <VirtualJoystick
@@ -449,19 +467,45 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
         </div>
       )}
 
-      {/* Right: Action buttons */}
-      <div className="absolute right-1.5 pointer-events-auto" style={{ bottom: safeBottom }}>
-        <ActionButtons isPortrait={isPortrait} />
-      </div>
+      {/* ═══════════════════════════════════════════════════════
+           PORTRAIT: Split buttons — thrust/action below ОРНТ,
+           utility buttons at bottom-right
+           ═══════════════════════════════════════════════════════ */}
+      {isPortrait ? (
+        <>
+          {/* Right side below ОРНТ panel: Thrust + Action button */}
+          <div
+            className="absolute right-1 pointer-events-auto flex flex-col items-end gap-2"
+            style={{ top: 'calc(50% + 90px)' }}
+          >
+            <ThrustButtons isPortrait={isPortrait} />
+            <MobileActionButton isPortrait={isPortrait} inline />
+          </div>
 
-      {/* Center: Context action button */}
-      <MobileActionButton isPortrait={isPortrait} />
+          {/* Bottom-right: Orbital adjustment + Time warp */}
+          <div
+            className="absolute right-1.5 pointer-events-auto flex flex-col items-center gap-1"
+            style={{ bottom: safeBottom }}
+          >
+            <OrbitalButtons isPortrait={isPortrait} />
+            <TimeWarpButtons isPortrait={isPortrait} />
+          </div>
+        </>
+      ) : (
+        /* LANDSCAPE: All action buttons at bottom-right, action at bottom-center */
+        <>
+          <div className="absolute right-1.5 pointer-events-auto" style={{ bottom: safeBottom }}>
+            <ActionButtons isPortrait={isPortrait} />
+          </div>
+          <MobileActionButton isPortrait={isPortrait} />
+        </>
+      )}
     </div>
   );
 }
 
 /** Central action button (equivalent to SPACE key) — ЗАХВАТ / СТЫКОВКА / СНИЖЕНИЕ / ДАЛЕЕ */
-function MobileActionButton({ isPortrait }: { isPortrait: boolean }) {
+function MobileActionButton({ isPortrait, inline }: { isPortrait: boolean; inline?: boolean }) {
   const gameMode = useGameStore(s => s.gameMode);
   const canCapture = useGameStore(s => s.canCapture);
   const canDeploy = useGameStore(s => s.canDeploy);
@@ -507,19 +551,29 @@ function MobileActionButton({ isPortrait }: { isPortrait: boolean }) {
     red: 'bg-red-500/30 border-red-400/60 text-red-200 shadow-lg shadow-red-500/15',
   };
 
-  // Ultra-compact: 40% smaller
   const btnSize = isPortrait
     ? 'px-3 py-2 text-[9px]'
     : 'px-4 py-2.5 text-[10px]';
 
+  const button = (
+    <button
+      onTouchStart={(e) => { e.preventDefault(); handleAction(); }}
+      className={`rounded-lg border font-bold tracking-wide active:scale-95 transition-all min-h-[36px] ${btnSize} ${colorMap[action.color]}`}
+    >
+      {action.label}
+    </button>
+  );
+
+  // Inline mode: return just the button (parent handles positioning)
+  if (inline) return button;
+
+  // Default: absolute positioned at bottom center
   return (
-    <div className="absolute left-1/2 -translate-x-1/2 pointer-events-auto z-40" style={{ bottom: 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))' }}>
-      <button
-        onTouchStart={(e) => { e.preventDefault(); handleAction(); }}
-        className={`rounded-lg border font-bold tracking-wide active:scale-95 transition-all min-h-[36px] ${btnSize} ${colorMap[action.color]}`}
-      >
-        {action.label}
-      </button>
+    <div
+      className="absolute left-1/2 -translate-x-1/2 pointer-events-auto z-40"
+      style={{ bottom: 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))' }}
+    >
+      {button}
     </div>
   );
 }
