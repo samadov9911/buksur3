@@ -235,7 +235,7 @@ export default function HUD({ distanceToTarget, relativeSpeed, timeRemaining, ca
            МОБИЛЬНЫЙ КОМПАКТНЫЙ HUD — один ультракомпактный ряд, max ~7% экрана
            ═══════════════════════════════════════════════════════════════════════ */}
       {isMobile && (
-      <div className="absolute top-0 left-0 right-0 pointer-events-auto z-20">
+      <div className="absolute top-0 left-0 right-0 pointer-events-auto z-20" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }}>
         {/* Row 1: Single unified top bar — all essential info in one line */}
         <div className="flex items-center justify-between gap-px px-1 py-px">
           {/* Fullscreen toggle */}
@@ -259,22 +259,18 @@ export default function HUD({ distanceToTarget, relativeSpeed, timeRemaining, ca
           <span className={`text-[9px] font-mono font-bold ${timeColor} shrink-0`}>{mins}:{secs.toString().padStart(2, '0')}</span>
           {/* Camera + Pause buttons — ultra compact */}
           <div className="flex items-center gap-px shrink-0">
-            {(['cockpit', 'tug', 'target', 'orbital'] as const).map((view) => {
-              const labels: Record<string, string> = { cockpit: '📷', tug: '🚀', target: '🎯', orbital: '🌍' };
-              return (
-                <button
-                  key={view}
-                  onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setCameraView(view); }}
-                  className={`w-5 h-5 rounded flex items-center justify-center transition-all ${
-                    cameraView === view
-                      ? 'bg-cyan-500/30 border border-cyan-400/60 shadow-sm shadow-cyan-500/20'
-                      : 'bg-black/60 border border-white/15 active:bg-white/10'
-                  }`}
-                >
-                  <span className="text-[8px] leading-none">{labels[view]}</span>
-                </button>
-              );
-            })}
+            <button
+              onTouchStart={(e) => {
+                e.preventDefault();
+                const views: Array<'cockpit' | 'tug' | 'target' | 'orbital'> = ['cockpit', 'tug', 'target', 'orbital'];
+                const idx = views.indexOf(cameraView);
+                useGameStore.getState().setCameraView(views[(idx + 1) % views.length]);
+              }}
+              className="px-1 py-0.5 rounded flex items-center gap-px active:scale-95 transition-all bg-black/60 border border-white/15"
+            >
+              <span className="text-[8px]">📷</span>
+              <span className="text-[6px] font-bold text-cyan-400">КАМ</span>
+            </button>
             <button
               onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().pauseGame(); }}
               className="w-5 h-5 rounded bg-black/60 border border-white/15 flex items-center justify-center active:bg-white/10 transition-all"

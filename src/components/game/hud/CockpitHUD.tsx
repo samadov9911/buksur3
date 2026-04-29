@@ -222,7 +222,10 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== ЛЕВАЯ ПАНЕЛЬ: Высота + Отклонение высоты ===== */}
-      <div className={`absolute top-1/2 -translate-y-1/2 ${isMobile ? 'left-1' : 'left-3'}`}>
+      <div 
+        className={`absolute top-1/2 ${isMobile ? 'left-1' : 'left-3'}`}
+        style={{ transform: isMobile ? 'translateY(-55%)' : 'translateY(-50%)' }}
+      >
         {/* Высота */}
         <div className={`${isMobile ? 'mb-0.5 px-1 py-0.5' : 'mb-2 px-2 py-1.5'} rounded`} style={PANEL}>
           <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ВЫС</div>
@@ -269,7 +272,10 @@ export default function CockpitHUD() {
       )}
 
       {/* ===== ПРАВАЯ ПАНЕЛЬ: Все основные параметры ===== */}
-      <div className={`absolute top-1/2 -translate-y-1/2 flex flex-col ${isMobile ? 'right-1 gap-px' : 'right-3 gap-1.5'} items-end`}>
+      <div 
+        className={`absolute top-1/2 flex flex-col ${isMobile ? 'right-1 gap-0.5' : 'right-3 gap-1.5'} items-end`}
+        style={{ transform: isMobile ? 'translateY(-65%)' : 'translateY(-50%)' }}
+      >
         {/* Скорость */}
         <div className={`${isMobile ? 'px-1 py-px' : 'px-2 py-1.5'} rounded text-right`} style={PANEL}>
           <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>СКР</div>
@@ -360,7 +366,10 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ЛЕВАЯ: ΔV запас ===== */}
-      <div className={`absolute ${isMobile ? 'left-1 bottom-36' : 'left-3 bottom-16'}`}>
+      <div 
+        className={`absolute ${isMobile ? 'left-1' : 'left-3'}`}
+        style={{ bottom: isMobile ? 'max(9rem, calc(9rem + env(safe-area-inset-bottom, 0px)))' : '4rem' }}
+      >
         <div className={`${isMobile ? 'px-1 py-0.5' : 'px-2.5 py-2'} rounded`} style={PANEL}>
           <div className={`flex items-center ${isMobile ? 'gap-0.5' : 'gap-2'}`}>
             <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔV</div>
@@ -378,7 +387,10 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ЦЕНТР: Статусная строка ===== */}
-      <div className={`absolute left-1/2 -translate-x-1/2 ${isMobile ? 'bottom-28' : 'bottom-4'}`}>
+      <div 
+        className="absolute left-1/2 -translate-x-1/2"
+        style={{ bottom: isMobile ? 'max(7rem, calc(7rem + env(safe-area-inset-bottom, 0px)))' : '1rem' }}
+      >
         <div className={`flex items-center ${isMobile ? 'gap-1 px-1.5 py-0.5' : 'gap-3 px-4 py-1.5'} rounded-full`} style={{ background: 'rgba(0,20,10,0.5)', border: '1px solid rgba(0,255,136,0.15)' }}>
           <span className={isMobile ? 'text-[6px]' : 'text-[9px]'} style={{ color: 'rgba(0,255,136,0.6)' }}>
             АПГ {safeNum(apogee, 0)} / ППГ {safeNum(perigee, 0)}
@@ -395,7 +407,10 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ПРАВАЯ: Топливо ===== */}
-      <div className={`absolute ${isMobile ? 'right-1 bottom-36' : 'right-3 bottom-16'}`}>
+      <div 
+        className={`absolute ${isMobile ? 'right-1' : 'right-3'}`}
+        style={{ bottom: isMobile ? 'max(9rem, calc(9rem + env(safe-area-inset-bottom, 0px)))' : '4rem' }}
+      >
         <div className={`${isMobile ? 'px-1 py-0.5' : 'px-2.5 py-2'} rounded`} style={PANEL}>
           <div className={`flex items-center ${isMobile ? 'gap-0.5' : 'gap-2 mb-1'}`}>
             <div className={isMobile ? 'text-[6px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ТПЛ</div>

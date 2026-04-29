@@ -444,7 +444,7 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
            ═══════════════════════════════════════════════════════ */}
 
       {isCockpitPortrait ? (
-        <div className="absolute left-1 pointer-events-auto" style={{ top: 'calc(50% + 56px)' }}>
+        <div className="absolute left-1 pointer-events-auto" style={{ top: 'calc(50% + 70px)' }}>
           <VirtualJoystick
             baseSize={joystickBase}
             stickSize={joystickStick}
@@ -476,7 +476,7 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
           {/* Right side below ОРНТ panel: Thrust + Action button */}
           <div
             className="absolute right-1 pointer-events-auto flex flex-col items-end gap-2"
-            style={{ top: 'calc(50% + 90px)' }}
+            style={{ top: 'calc(50% + 100px)' }}
           >
             <ThrustButtons isPortrait={isPortrait} />
             <MobileActionButton isPortrait={isPortrait} inline />
