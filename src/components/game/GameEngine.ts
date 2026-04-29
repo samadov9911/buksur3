@@ -332,8 +332,9 @@ export function useGameEngine() {
         const tugSpec = gs.gameMode === 'janitor' ? JANITOR_TUG : DEPLOYER_TUG;
         const g0 = 9.80665;
         const fuelReserve = gs.tugFuelReserve || 23;
+        const effectiveIsp = gs.tugIspOverride ?? tugSpec.isp;
         const totalMassForDv = tugSpec.dryMass + fuelReserve;
-        const maxDv = tugSpec.isp * g0 * Math.log(totalMassForDv / tugSpec.dryMass);
+        const maxDv = effectiveIsp * g0 * Math.log(totalMassForDv / tugSpec.dryMass);
         useGameStore.setState({
           fuelMass: fuelReserve,
           initialFuelMass: fuelReserve,

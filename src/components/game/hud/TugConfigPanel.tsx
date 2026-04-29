@@ -20,9 +20,14 @@ export default function TugConfigPanel({ onClose }: { onClose: () => void }) {
   const baseSpec = gameMode === 'janitor' ? JANITOR_TUG : DEPLOYER_TUG;
   const effectiveThrust = tugThrustOverride ?? baseSpec.thrust;
   const effectiveIsp = tugIspOverride ?? baseSpec.isp;
-  const currentMass = baseSpec.dryMass + fuelMass + tugPayloadMass;
   const g0 = 9.80665;
-  const maxDv = effectiveIsp * g0 * Math.log(currentMass / baseSpec.dryMass);
+  const dryMass = baseSpec.dryMass + tugPayloadMass;
+  const initialMass = dryMass + tugFuelReserve;
+  const currentMass = dryMass + fuelMass;
+  // Максимальный ΔV — от полного запаса топлива до сухой массы
+  const totalMaxDv = effectiveIsp * g0 * Math.log(initialMass / Math.max(dryMass, 1));
+  // Оставшийся ΔV — от текущего топлива до сухой массы
+  const remainingDv = effectiveIsp * g0 * Math.log(currentMass / Math.max(dryMass, 1));
 
   return (
     <div className="bg-gray-900/95 border border-gray-700 rounded-2xl p-4 md:p-6 w-[calc(100%-2rem)] md:w-[480px] max-w-[480px] max-h-[80vh] overflow-y-auto shadow-2xl shadow-black/50 pointer-events-auto"
@@ -186,8 +191,13 @@ export default function TugConfigPanel({ onClose }: { onClose: () => void }) {
             />
             <CalcParam
               label="Макс. ΔV"
-              value={`${maxDv.toFixed(0)} м/с`}
-              color={maxDv > 2000 ? 'text-emerald-400' : maxDv > 1000 ? 'text-yellow-400' : 'text-red-400'}
+              value={`${totalMaxDv.toFixed(0)} м/с`}
+              color={totalMaxDv > 2000 ? 'text-emerald-400' : totalMaxDv > 1000 ? 'text-yellow-400' : 'text-red-400'}
+            />
+            <CalcParam
+              label="Остаток ΔV"
+              value={`${remainingDv.toFixed(0)} м/с`}
+              color={remainingDv > 1000 ? 'text-cyan-400' : remainingDv > 300 ? 'text-yellow-400' : 'text-red-400'}
             />
           </div>
         </div>

@@ -607,8 +607,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
       const tugSpec = mission.mode === 'nanosat' ? DEPLOYER_TUG : JANITOR_TUG;
       const g0 = 9.80665;
       const fuelReserve = get().tugFuelReserve;
+      const effectiveIsp = get().tugIspOverride ?? tugSpec.isp;
       const totalMass = tugSpec.dryMass + fuelReserve;
-      const maxDv = tugSpec.isp * g0 * Math.log(totalMass / tugSpec.dryMass);
+      const maxDv = effectiveIsp * g0 * Math.log(totalMass / tugSpec.dryMass);
       set({
         currentMissionId: missionId,
         currentMission: mission,
@@ -710,9 +711,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set((state) => {
       const newFuel = Math.max(0, state.fuelMass - massKg);
       const tugSpec = state.gameMode === 'nanosat' ? DEPLOYER_TUG : JANITOR_TUG;
+      const effectiveIsp = state.tugIspOverride ?? tugSpec.isp;
       const g0 = 9.80665;
-      const currentMass = tugSpec.dryMass + newFuel;
-      const usedDv = tugSpec.isp * g0 * Math.log(tugSpec.totalMass / Math.max(currentMass, 1));
+      // Учитываем массу полезной нагрузки (захваченный мусор и т.д.)
+      const currentMass = tugSpec.dryMass + newFuel + state.tugPayloadMass;
+      const initialMass = tugSpec.dryMass + state.initialFuelMass + state.tugPayloadMass;
+      const usedDv = effectiveIsp * g0 * Math.log(initialMass / Math.max(currentMass, 1));
       return {
         fuelMass: newFuel,
         usedDeltaV: usedDv,
@@ -882,8 +886,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     // Пересчитываем delta-V
     const tugSpec = gameMode === 'nanosat' ? DEPLOYER_TUG : JANITOR_TUG;
     const g0 = 9.80665;
+    const effectiveIsp = tugIspOverride ?? tugSpec.isp;
     const totalMass = tugSpec.dryMass + tugFuelReserve;
-    const maxDv = tugSpec.isp * g0 * Math.log(totalMass / tugSpec.dryMass);
+    const maxDv = effectiveIsp * g0 * Math.log(totalMass / tugSpec.dryMass);
 
     set({
       // Сохраняем настройки и миссию
@@ -995,16 +1000,73 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   // Пользовательские характеристики буксира
   setTugPayloadMass: (mass) =>
-    set({ tugPayloadMass: Math.max(0, Math.min(5000, mass)) }),
+    set((state) => {
+      const newMass = Math.max(0, Math.min(5000, mass));
+      const tugSpec = state.gameMode === 'nanosat' ? DEPLOYER_TUG : JANITOR_TUG;
+      const effectiveIsp = state.tugIspOverride ?? tugSpec.isp;
+      const g0 = 9.80665;
+      // Пересчитываем maxDeltaV с новой массой нагрузки
+      const dryMass = tugSpec.dryMass + newMass;
+      const initialMass = dryMass + state.initialFuelMass;
+      const currentMass = dryMass + state.fuelMass;
+      const totalMaxDv = effectiveIsp * g0 * Math.log(initialMass / Math.max(dryMass, 1));
+      const currentRemaining = effectiveIsp * g0 * Math.log(currentMass / Math.max(dryMass, 1));
+      return {
+        tugPayloadMass: newMass,
+        maxDeltaV: totalMaxDv,
+        remainingDeltaV: currentRemaining,
+        usedDeltaV: totalMaxDv - currentRemaining,
+      };
+    }),
 
   setTugThrustOverride: (thrust) =>
     set({ tugThrustOverride: thrust !== null ? Math.max(0.01, Math.min(50, thrust)) : null }),
 
   setTugIspOverride: (isp) =>
-    set({ tugIspOverride: isp !== null ? Math.max(100, Math.min(10000, isp)) : null }),
+    set((state) => {
+      const newIsp = isp !== null ? Math.max(100, Math.min(10000, isp)) : null;
+      const tugSpec = state.gameMode === 'nanosat' ? DEPLOYER_TUG : JANITOR_TUG;
+      const effectiveIsp = newIsp ?? tugSpec.isp;
+      const g0 = 9.80665;
+      // Пересчитываем maxDeltaV и remainingDeltaV с новым Isp
+      const dryMass = tugSpec.dryMass + state.tugPayloadMass;
+      const initialMass = dryMass + state.initialFuelMass;
+      const currentMass = dryMass + state.fuelMass;
+      const totalMaxDv = effectiveIsp * g0 * Math.log(initialMass / Math.max(dryMass, 1));
+      const currentRemaining = effectiveIsp * g0 * Math.log(currentMass / Math.max(dryMass, 1));
+      return {
+        tugIspOverride: newIsp,
+        maxDeltaV: totalMaxDv,
+        remainingDeltaV: currentRemaining,
+        usedDeltaV: totalMaxDv - currentRemaining,
+      };
+    }),
 
   setTugFuelReserve: (mass) =>
-    set({ tugFuelReserve: Math.max(1, Math.min(5000, mass)) }),
+    set((state) => {
+      const newReserve = Math.max(1, Math.min(5000, mass));
+      const tugSpec = state.gameMode === 'nanosat' ? DEPLOYER_TUG : JANITOR_TUG;
+      const effectiveIsp = state.tugIspOverride ?? tugSpec.isp;
+      const g0 = 9.80665;
+      // Пересчитываем fuelMass: дозаправляем если запас увеличен,
+      // обрезаем если запас уменьшен ниже текущего топлива
+      const newFuelMass = Math.min(state.fuelMass, newReserve);
+      const currentTotalMass = tugSpec.dryMass + newFuelMass + state.tugPayloadMass;
+      const initialTotalMass = tugSpec.dryMass + newReserve + state.tugPayloadMass;
+      const maxDv = effectiveIsp * g0 * Math.log(initialTotalMass / Math.max(currentTotalMass, 1));
+      // Пересчитываем использованный ΔV
+      const usedDv = effectiveIsp * g0 * Math.log(initialTotalMass / Math.max(currentTotalMass, 1));
+      // remainingDeltaV — то, что осталось от максимального
+      const totalMaxDv = effectiveIsp * g0 * Math.log(initialTotalMass / Math.max(tugSpec.dryMass + state.tugPayloadMass, 1));
+      return {
+        tugFuelReserve: newReserve,
+        fuelMass: newFuelMass,
+        initialFuelMass: newReserve,
+        maxDeltaV: totalMaxDv,
+        usedDeltaV: totalMaxDv - effectiveIsp * g0 * Math.log(currentTotalMass / Math.max(tugSpec.dryMass + state.tugPayloadMass, 1)),
+        remainingDeltaV: effectiveIsp * g0 * Math.log(currentTotalMass / Math.max(tugSpec.dryMass + state.tugPayloadMass, 1)),
+      };
+    }),
 
   toggleTugConfig: () => set((state) => ({ showTugConfig: !state.showTugConfig })),
 
