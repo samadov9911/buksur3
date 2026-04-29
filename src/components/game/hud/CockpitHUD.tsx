@@ -360,7 +360,7 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ЛЕВАЯ: ΔV запас ===== */}
-      <div className={`absolute ${isMobile ? 'left-1.5 bottom-24' : 'left-3 bottom-16'}`}>
+      <div className={`absolute ${isMobile ? 'left-1.5 bottom-32' : 'left-3 bottom-16'}`}>
         <div className={`${isMobile ? 'px-1.5 py-1' : 'px-2.5 py-2'} rounded`} style={PANEL}>
           <div className={`flex items-center ${isMobile ? 'gap-1' : 'gap-2'}`}>
             <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ΔV</div>
@@ -378,7 +378,7 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ЦЕНТР: Статусная строка ===== */}
-      <div className={`absolute left-1/2 -translate-x-1/2 ${isMobile ? 'bottom-16' : 'bottom-4'}`}>
+      <div className={`absolute left-1/2 -translate-x-1/2 ${isMobile ? 'bottom-24' : 'bottom-4'}`}>
         <div className={`flex items-center ${isMobile ? 'gap-1.5 px-2 py-1' : 'gap-3 px-4 py-1.5'} rounded-full`} style={{ background: 'rgba(0,20,10,0.5)', border: '1px solid rgba(0,255,136,0.15)' }}>
           <span className={isMobile ? 'text-[7px]' : 'text-[9px]'} style={{ color: 'rgba(0,255,136,0.6)' }}>
             АПГ {safeNum(apogee, 0)} / ППГ {safeNum(perigee, 0)}
@@ -395,7 +395,7 @@ export default function CockpitHUD() {
       </div>
 
       {/* ===== НИЖНЯЯ ПРАВАЯ: Топливо ===== */}
-      <div className={`absolute ${isMobile ? 'right-1.5 bottom-24' : 'right-3 bottom-16'}`}>
+      <div className={`absolute ${isMobile ? 'right-1.5 bottom-32' : 'right-3 bottom-16'}`}>
         <div className={`${isMobile ? 'px-1.5 py-1' : 'px-2.5 py-2'} rounded`} style={PANEL}>
           <div className={`flex items-center ${isMobile ? 'gap-1' : 'gap-2 mb-1'}`}>
             <div className={isMobile ? 'text-[7px]' : 'text-[8px]'} style={{ color: LABEL_CLR }}>ТОПЛ</div>
@@ -420,11 +420,11 @@ export default function CockpitHUD() {
             {/* Камера — цикл переключения */}
             <button
               onTouchStart={(e) => { e.preventDefault(); e.stopPropagation(); cycleCamera(); }}
-              className="px-2 py-1.5 rounded-lg flex items-center gap-1 active:scale-95 transition-all"
+              className="px-1.5 py-1 rounded flex items-center gap-0.5 active:scale-95 transition-all"
               style={{ background: 'rgba(0,20,10,0.7)', border: '1px solid rgba(0,255,136,0.3)' }}
             >
-              <span className="text-xs">📷</span>
-              <span className="text-[8px] font-bold" style={{ color: VALUE_CLR }}>КАМЕРА</span>
+              <span className="text-[10px]">📷</span>
+              <span className="text-[7px] font-bold" style={{ color: VALUE_CLR }}>КАМЕРА</span>
             </button>
             {/* Курс + Таймер + Warp */}
             <div className="flex items-center gap-1">

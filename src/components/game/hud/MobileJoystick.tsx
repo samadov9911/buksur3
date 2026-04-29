@@ -255,10 +255,10 @@ function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
     useGameStore.getState().setThrust(false);
   }, []);
 
-  // Portrait: compact buttons. Landscape: larger buttons
-  const btnH = isPortrait ? 'h-10' : 'h-11';
-  const btnW = isPortrait ? 'w-10' : 'w-12';
-  const textSize = isPortrait ? 'text-[9px]' : 'text-[10px]';
+  // Portrait: compact buttons. Landscape: slightly larger buttons
+  const btnH = isPortrait ? 'h-9' : 'h-10';
+  const btnW = isPortrait ? 'w-9' : 'w-10';
+  const textSize = isPortrait ? 'text-[8px]' : 'text-[9px]';
 
   return (
     <div className="flex flex-col items-center gap-1.5">
@@ -291,14 +291,14 @@ function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
       </div>
 
       {/* Row 2: Thrust forward/reverse — prominent buttons */}
-      <div className="flex gap-1.5">
+      <div className="flex gap-1">
         <button
           onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setThrust(true); }}
           onTouchEnd={(e) => { e.preventDefault(); useGameStore.getState().setThrust(false); }}
           onTouchCancel={() => useGameStore.getState().setThrust(false)}
-          className={`${isPortrait ? 'w-14' : 'w-16'} ${btnH} rounded-lg border flex items-center justify-center transition-all bg-red-950/30 border-red-500/30 active:bg-red-500/25`}
+          className={`${isPortrait ? 'w-12' : 'w-14'} ${btnH} rounded-lg border flex items-center justify-center transition-all bg-red-950/30 border-red-500/30 active:bg-red-500/25`}
         >
-          <svg width={isPortrait ? 14 : 16} height={isPortrait ? 14 : 16} viewBox="0 0 16 16" fill="none">
+          <svg width={isPortrait ? 12 : 14} height={isPortrait ? 12 : 14} viewBox="0 0 16 16" fill="none">
             <path d="M4 12 L8 4 L12 12" stroke="#f87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
@@ -306,13 +306,13 @@ function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
           onTouchStart={handleThrustStart}
           onTouchEnd={handleThrustEnd}
           onTouchCancel={handleThrustEnd}
-          className={`${isPortrait ? 'w-14' : 'w-16'} ${btnH} rounded-lg border flex items-center justify-center transition-all ${
+          className={`${isPortrait ? 'w-12' : 'w-14'} ${btnH} rounded-lg border flex items-center justify-center transition-all ${
             thrustActive
               ? 'bg-cyan-500/30 border-cyan-400/60 shadow-lg shadow-cyan-500/20'
               : 'bg-cyan-950/30 border-cyan-500/30'
           }`}
         >
-          <svg width={isPortrait ? 14 : 16} height={isPortrait ? 14 : 16} viewBox="0 0 16 16" fill="none">
+          <svg width={isPortrait ? 12 : 14} height={isPortrait ? 12 : 14} viewBox="0 0 16 16" fill="none">
             <path d="M4 4 L8 12 L12 4" stroke={thrustActive ? '#22d3ee' : '#67e8f9'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
@@ -341,8 +341,8 @@ function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
 
 /** Roll buttons — below the orientation joystick */
 function RollButtons({ isPortrait }: { isPortrait: boolean }) {
-  const btnSize = isPortrait ? 'w-10 h-10' : 'w-12 h-12';
-  const textSize = isPortrait ? 'text-[10px]' : 'text-xs';
+  const btnSize = isPortrait ? 'w-9 h-9' : 'w-10 h-10';
+  const textSize = isPortrait ? 'text-[9px]' : 'text-[10px]';
 
   return (
     <div className="flex items-center gap-1 mt-1">
@@ -488,8 +488,8 @@ function MobileActionButton({ isPortrait }: { isPortrait: boolean }) {
   };
 
   const btnSize = isPortrait
-    ? 'px-5 py-3 text-[11px]'
-    : 'px-6 py-3.5 text-xs';
+    ? 'px-4 py-2.5 text-[10px]'
+    : 'px-5 py-3 text-[11px]';
 
   return (
     <div className="absolute left-1/2 -translate-x-1/2 pointer-events-auto z-40" style={{ bottom: 'max(0.75rem, calc(0.75rem + env(safe-area-inset-bottom, 0px)))' }}>
