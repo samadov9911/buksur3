@@ -233,8 +233,8 @@ export default function MissionSelect() {
               </button>
             </div>
 
-            {/* Scrollable content area — mission info + capture type selection */}
-            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom, 0px))' }}>
+            {/* Scrollable content area — mission info + capture type + start button */}
+            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner" style={{ paddingBottom: 'max(1.5rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)))' }}>
               {/* Mission info card — compact on mobile */}
               <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-3 md:p-6 mb-3 md:mb-4">
                 <div className="flex items-center gap-2 mb-2 md:mb-3">
@@ -342,17 +342,17 @@ export default function MissionSelect() {
                   </div>
                 </div>
               )}
-            </div>
 
-            {/* ===== КНОПКА СТАРТА (всегда видна внизу) ===== */}
-            <div className="shrink-0 px-4 md:px-0 pt-2 pb-2 md:pb-3 safe-bottom">
-              <button
-                onClick={handleStartMission}
-                onTouchEnd={(e) => { e.preventDefault(); handleStartMission(); }}
-                className="w-full md:w-auto px-8 py-3.5 md:py-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 text-black font-bold text-base md:text-lg transition-all hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-cyan-500/30 min-h-[48px] touch-btn"
-              >
-                🚀 Начать миссию
-              </button>
+              {/* ===== КНОПКА СТАРТА — внутри скролла, сразу после карточек ===== */}
+              <div className="flex justify-center pt-2 pb-2">
+                <button
+                  onClick={handleStartMission}
+                  onTouchEnd={(e) => { e.preventDefault(); handleStartMission(); }}
+                  className="w-full md:w-auto px-8 py-3.5 md:py-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 text-black font-bold text-base md:text-lg transition-all hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-cyan-500/30 min-h-[48px] touch-btn"
+                >
+                  🚀 Начать миссию
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
