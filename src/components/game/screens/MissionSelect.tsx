@@ -233,8 +233,8 @@ export default function MissionSelect() {
               </button>
             </div>
 
-            {/* Scrollable content area — mission info card only */}
-            <div className="px-4 md:px-0 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner max-h-[35vh] overflow-y-auto overscroll-contain mb-3">
+            {/* Mission info card — no height limit on mobile, flows naturally */}
+            <div className="px-4 md:px-0 mb-3">
               {/* Mission info card — compact on mobile */}
               <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-3 md:p-6 mb-3 md:mb-4">
                 <div className="flex items-center gap-2 mb-2 md:mb-3">
