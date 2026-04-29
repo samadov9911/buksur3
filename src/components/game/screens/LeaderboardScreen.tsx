@@ -71,7 +71,7 @@ export default function LeaderboardScreen() {
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-hidden" style={{ height: '100dvh', height: '100vh' }}>
+    <div className="game-screen pointer-events-auto" style={{ background: 'rgba(0,0,0,0.8)' }}>
         {/* Fixed header */}
         <div className="shrink-0 w-full max-w-2xl mx-auto px-4 pt-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 text-center">🏆 Таблица лидеров</h2>

@@ -33,8 +33,8 @@ export default function ModeSelect() {
   ];
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/60 overflow-hidden" style={{ height: '100dvh', height: '100vh' }}>
-      <div className="flex flex-col items-center justify-center w-full px-4 py-6 md:px-8 md:py-8 min-h-0 flex-1 overflow-y-auto scroll-inner safe-bottom">
+    <div className="game-screen pointer-events-auto" style={{ background: 'rgba(0,0,0,0.6)' }}>
+      <div className="game-screen-scroll">
       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 md:mb-8">Выберите режим</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-5xl w-full">
@@ -81,7 +81,7 @@ export default function ModeSelect() {
 
       <button
         onClick={() => useGameStore.getState().setScreen('splash')}
-        className="mt-6 md:mt-8 mb-4 text-gray-500 hover:text-gray-300 transition-colors text-sm"
+        className="mt-4 mb-2 text-gray-500 hover:text-gray-300 transition-colors text-sm py-2 px-4 touch-btn"
       >
         ← Назад
       </button>
