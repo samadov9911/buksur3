@@ -621,6 +621,12 @@ export default function Game() {
             yaw: Number.isFinite(result.tugYaw) ? result.tugYaw : 0,
             roll: Number.isFinite(result.tugRoll) ? result.tugRoll : 0,
           });
+
+          // Обновляем store расстояния и скорости для HUD
+          useGameStore.setState({
+            distanceToTarget: safe(result.distanceToTarget),
+            relativeSpeed: safe(result.relativeSpeed),
+          });
         }
       } catch (err) {
         // Prevent game loop errors from crashing the entire app (critical for mobile)
