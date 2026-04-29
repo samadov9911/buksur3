@@ -26,8 +26,8 @@ export default function ResultsScreen() {
   const score = Math.floor(result.score);
 
   return (
-    <div className="game-screen pointer-events-auto" style={{ background: 'rgba(0,0,0,0.8)' }}>
-      <div className="game-screen-scroll">
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-hidden" style={{ height: '100dvh', height: '100vh' }}>
+      <div className="flex-1 min-h-0 flex flex-col items-center justify-center p-4 safe-bottom overflow-y-auto scroll-inner">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

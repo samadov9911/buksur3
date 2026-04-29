@@ -102,7 +102,7 @@ export default function MissionSelect() {
   };
 
   return (
-    <div className="game-screen pointer-events-auto" style={{ background: 'rgba(0,0,0,0.7)' }}>
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/70 overflow-hidden" style={{ height: '100dvh', height: '100vh' }}>
       <AnimatePresence mode="wait">
         {!selectedMission ? (
           /* ===== СПИСОК МИССИЙ ===== */
@@ -240,7 +240,7 @@ export default function MissionSelect() {
                 </div>
                 <p className="text-gray-300 mb-4">{selectedMission.description}</p>
 
-                <div className="grid grid-cols-2 gap-2 sm:gap-3 text-sm">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
                   <div className="bg-black/30 rounded-lg p-3">
                     <div className="text-gray-500 text-xs mb-1">Время</div>
                     <div className="text-white font-mono">{Math.floor(selectedMission.timeLimit / 60)}:{(selectedMission.timeLimit % 60).toString().padStart(2, '0')}</div>
@@ -297,7 +297,7 @@ export default function MissionSelect() {
                     )}
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                     {captureTypes.map((ct) => {
                       const isSelected = playerCaptureType === ct.type;
                       const isRecommended = ct.type === recommendedCapture;
@@ -340,11 +340,11 @@ export default function MissionSelect() {
             </div>
 
             {/* ===== КНОПКА СТАРТА (всегда видна внизу) ===== */}
-            <div className="flex justify-center shrink-0 pt-2 pb-2 safe-bottom px-4 md:px-0">
+            <div className="flex justify-center gap-4 shrink-0 pt-2 pb-2 safe-bottom px-4 md:px-0">
               <button
                 onClick={handleStartMission}
                 onTouchEnd={(e) => { e.preventDefault(); handleStartMission(); }}
-                className="px-8 py-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 text-black font-bold text-lg transition-all hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-cyan-500/30 min-h-[48px] touch-btn w-full max-w-sm"
+                className="px-8 py-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:bg-cyan-600 text-black font-bold text-lg transition-all hover:scale-105 active:scale-95 hover:shadow-lg hover:shadow-cyan-500/30 min-h-[48px] touch-btn"
               >
                 🚀 Начать миссию
               </button>

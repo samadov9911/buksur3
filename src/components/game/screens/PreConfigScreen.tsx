@@ -177,35 +177,33 @@ export default function PreConfigScreen() {
 
   // ---- RENDER ----
   return (
-    <div className="game-screen pointer-events-auto" style={{ background: 'rgba(0,0,0,0.85)' }}>
-      <div className="game-screen-scroll">
-        <div className="max-w-4xl w-full mx-auto">
-          <AnimatePresence mode="wait">
-            {step === 'count' ? (
-              <CountStep
-                key="count"
-                gameMode={gameMode!}
-                onSelect={handleSetCount}
-              />
-            ) : gameMode === 'nanosat' ? (
-              <NanoSatConfigStep
-                key="nano-config"
-                configs={nanoConfigs}
-                onUpdate={updateNanoConfig}
-                onStart={handleStartMission}
-                onBack={() => setStep('count')}
-              />
-            ) : (
-              <DebrisConfigStep
-                key="debris-config"
-                configs={debrisConfigs}
-                onUpdate={updateDebrisConfig}
-                onStart={handleStartMission}
-                onBack={() => setStep('count')}
-              />
-            )}
-          </AnimatePresence>
-        </div>
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-hidden" style={{ height: '100dvh', height: '100vh' }}>
+      <div className="flex flex-col items-center w-full max-w-4xl px-4 py-6 md:px-8 md:py-8 safe-bottom min-h-0 flex-1">
+      <AnimatePresence mode="wait">
+        {step === 'count' ? (
+          <CountStep
+            key="count"
+            gameMode={gameMode!}
+            onSelect={handleSetCount}
+          />
+        ) : gameMode === 'nanosat' ? (
+          <NanoSatConfigStep
+            key="nano-config"
+            configs={nanoConfigs}
+            onUpdate={updateNanoConfig}
+            onStart={handleStartMission}
+            onBack={() => setStep('count')}
+          />
+        ) : (
+          <DebrisConfigStep
+            key="debris-config"
+            configs={debrisConfigs}
+            onUpdate={updateDebrisConfig}
+            onStart={handleStartMission}
+            onBack={() => setStep('count')}
+          />
+        )}
+      </AnimatePresence>
       </div>
     </div>
   );
@@ -221,29 +219,29 @@ function CountStep({ gameMode, onSelect }: { gameMode: string; onSelect: (count:
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="flex flex-col items-center text-center"
+      className="w-full max-w-2xl text-center"
     >
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3">
+      <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
         {gameMode === 'nanosat' ? '🛰 Количество наноспутников' : '🗑 Количество объектов мусора'}
       </h2>
-      <p className="text-gray-400 mb-6 md:mb-8 text-sm px-2">
+      <p className="text-gray-400 mb-8 text-sm">
         {gameMode === 'nanosat'
           ? 'Выберите, сколько наноспутников CubeSat вы планируете вывести на орбиту. Для каждого вы сможете выбрать тип орбиты и все элементы орбиты.'
           : 'Выберите, сколько объектов космического мусора вы планируете утилизировать. Для каждого выберите цель и тип захвата.'}
       </p>
 
-      <div className="grid grid-cols-3 gap-3 max-w-xs sm:max-w-sm mx-auto mb-8">
+      <div className="grid grid-cols-3 md:grid-cols-6 gap-3 max-w-lg mx-auto mb-8">
         {[1, 2, 3, 4, 5, 6].map((count) => (
           <motion.button
             key={count}
             whileHover={{ scale: 1.08, y: -4 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onSelect(count)}
-            className="py-4 sm:py-6 rounded-xl bg-gradient-to-br from-cyan-600/30 to-teal-700/30
+            className="py-6 rounded-xl bg-gradient-to-br from-cyan-600/30 to-teal-700/30
               border border-cyan-400/30 hover:border-cyan-400/60 hover:from-cyan-600/50 hover:to-teal-700/50
-              transition-all group active:scale-95 min-h-[56px] touch-btn"
+              transition-all group"
           >
-            <span className="text-2xl sm:text-3xl md:text-4xl font-black text-white group-hover:text-cyan-300 transition-colors">
+            <span className="text-3xl md:text-4xl font-black text-white group-hover:text-cyan-300 transition-colors">
               {count}
             </span>
           </motion.button>
@@ -252,7 +250,7 @@ function CountStep({ gameMode, onSelect }: { gameMode: string; onSelect: (count:
 
       <button
         onClick={() => useGameStore.getState().setScreen('missionSelect')}
-        className="text-gray-500 hover:text-gray-300 transition-colors text-sm py-2 px-4 touch-btn"
+        className="text-gray-500 hover:text-gray-300 transition-colors text-sm"
       >
         ← Назад к миссиям
       </button>
@@ -320,26 +318,26 @@ function NanoSatConfigStep({
       initial={{ opacity: 0, x: 30 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -30 }}
-      className="flex flex-col gap-3"
+      className="w-full max-w-4xl flex flex-col"
     >
-      <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1 py-2 px-1 touch-btn self-start">
+      <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm mb-3 flex items-center gap-1 shrink-0">
         ← Изменить количество
       </button>
 
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1 shrink-0">
         🛰 Конфигурация наноспутников
       </h2>
-      <p className="text-gray-400 text-sm">
+      <p className="text-gray-400 text-sm mb-4 shrink-0">
         Настройте тип орбиты и все элементы орбиты для каждого наноспутника
       </p>
 
       {/* Target selector tabs */}
-      <div className="flex gap-1.5 flex-wrap">
+      <div className="flex gap-1.5 mb-4 flex-wrap shrink-0">
         {configs.map((_, i) => (
           <button
             key={i}
             onClick={() => setActiveIndex(i)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all border min-h-[36px] touch-btn ${
+            className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all border ${
               activeIndex === i
                 ? 'bg-cyan-500/20 border-cyan-400/60 text-cyan-300'
                 : 'bg-black/40 border-white/10 text-gray-500 hover:text-gray-300 hover:border-white/20'
@@ -350,220 +348,222 @@ function NanoSatConfigStep({
         ))}
       </div>
 
-      {/* Configuration card */}
-      <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-3 sm:p-4 md:p-5">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-base sm:text-lg font-bold text-white">
-            Наноспутник #{activeIndex + 1}
-          </h3>
-          {isModified && activeConfig.orbitType !== 'CUSTOM' && (
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold whitespace-nowrap">
-              ОТРЕДАКТИРОВАНО
-            </span>
-          )}
-        </div>
+      {/* Scrollable content area */}
+      <div className="flex-1 overflow-y-auto pr-1 min-h-0 scroll-inner">
+        <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-5 mb-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-bold text-white">
+              Наноспутник #{activeIndex + 1}
+            </h3>
+            {isModified && activeConfig.orbitType !== 'CUSTOM' && (
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold">
+                ОТРЕДАКТИРОВАНО
+              </span>
+            )}
+          </div>
 
-        {/* Orbit type */}
-        <div className="mb-4">
-          <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">
-            ТИП ОРБИТЫ
-            <span className="ml-2 text-gray-600 font-normal normal-case hidden sm:inline">— шаблон (можно изменить любые параметры ниже)</span>
-          </label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {[
-              ...ORBIT_OPTIONS.map(o => ({ id: o.id, name: o.name })),
-              { id: 'CUSTOM', name: '✏️ Произвольная' },
-            ].map(orbit => (
-              <button
-                key={orbit.id}
-                onClick={() => {
-                  if (orbit.id !== 'CUSTOM') {
-                    const orb = ORBIT_TYPES[orbit.id];
-                    if (orb) {
+          {/* Orbit type */}
+          <div className="mb-4">
+            <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">
+              ТИП ОРБИТЫ
+              <span className="ml-2 text-gray-600 font-normal normal-case">— шаблон (можно изменить любые параметры ниже)</span>
+            </label>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {[
+                ...ORBIT_OPTIONS.map(o => ({ id: o.id, name: o.name })),
+                { id: 'CUSTOM', name: '✏️ Произвольная' },
+              ].map(orbit => (
+                <button
+                  key={orbit.id}
+                  onClick={() => {
+                    if (orbit.id !== 'CUSTOM') {
+                      const orb = ORBIT_TYPES[orbit.id];
+                      if (orb) {
+                        onUpdate(activeIndex, {
+                          orbitType: orbit.id,
+                          apogee: orb.altitude / 1000,
+                          perigee: orb.altitude / 1000,
+                          inclination: orb.inclination,
+                          raan: 0,
+                          argPerigee: 0,
+                          tolerance: {
+                            altitude: orb.altitude < 500000 ? 15 : orb.altitude < 1000000 ? 30 : 100,
+                            inclination: orb.inclination > 90 ? 1 : 2,
+                          },
+                        });
+                      }
+                    } else {
                       onUpdate(activeIndex, {
-                        orbitType: orbit.id,
-                        apogee: orb.altitude / 1000,
-                        perigee: orb.altitude / 1000,
-                        inclination: orb.inclination,
+                        orbitType: 'CUSTOM',
+                        apogee: 500,
+                        perigee: 400,
+                        inclination: 51.6,
                         raan: 0,
                         argPerigee: 0,
-                        tolerance: {
-                          altitude: orb.altitude < 500000 ? 15 : orb.altitude < 1000000 ? 30 : 100,
-                          inclination: orb.inclination > 90 ? 1 : 2,
-                        },
+                        tolerance: { altitude: 20, inclination: 2 },
                       });
                     }
-                  } else {
-                    onUpdate(activeIndex, {
-                      orbitType: 'CUSTOM',
-                      apogee: 500,
-                      perigee: 400,
-                      inclination: 51.6,
-                      raan: 0,
-                      argPerigee: 0,
-                      tolerance: { altitude: 20, inclination: 2 },
-                    });
-                  }
-                }}
-                className={`px-3 py-2 rounded-lg text-xs font-semibold text-left border transition-all min-h-[40px] ${
-                  activeConfig.orbitType === orbit.id
-                    ? 'bg-cyan-500/20 border-cyan-400/60 text-cyan-300'
-                    : 'bg-black/30 border-white/10 text-gray-400 hover:text-gray-200 hover:border-white/20'
-                }`}
-              >
-                {orbit.name}
-                {orbit.id !== 'CUSTOM' && ORBIT_TYPES[orbit.id] && (
-                  <span className="block text-[10px] text-gray-500 mt-0.5">
-                    {(ORBIT_TYPES[orbit.id].altitude / 1000).toFixed(0)} км, {ORBIT_TYPES[orbit.id].inclination}°
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* CubeSat type */}
-        <div className="mb-4">
-          <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">ТИП CUBESAT</label>
-          <div className="flex gap-2">
-            {CUBESAT_OPTIONS.map(opt => (
-              <button
-                key={opt.type}
-                onClick={() => onUpdate(activeIndex, { cubeSatType: opt.type })}
-                className={`flex-1 px-2 sm:px-3 py-2 rounded-lg border text-center transition-all min-h-[44px] ${
-                  activeConfig.cubeSatType === opt.type
-                    ? 'bg-emerald-500/20 border-emerald-400/60 text-emerald-300'
-                    : 'bg-black/30 border-white/10 text-gray-400 hover:text-gray-200 hover:border-white/20'
-                }`}
-              >
-                <div className="text-sm font-bold">{opt.label}</div>
-                <div className="text-[10px] text-gray-500">{opt.mass}</div>
-                <div className="text-[9px] text-gray-600 hidden sm:block">{opt.desc}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* ---- KEPLERIAN ORBITAL ELEMENTS ---- */}
-        <div className="mb-3">
-          <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">
-            ЭЛЕМЕНТЫ ОРБИТЫ (КЕО)
-          </label>
-
-          {/* Row 1: Apogee, Perigee, Inclination */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-3">
-            <div className="bg-black/30 rounded-lg p-2 sm:p-2.5">
-              <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
-                <span>Апогей (км)</span>
-                <span className="text-gray-600">hₐ</span>
-              </div>
-              <input
-                type="number"
-                value={Math.round(activeConfig.apogee)}
-                onChange={e => onUpdate(activeIndex, { apogee: Number(e.target.value) })}
-                className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
-                min={200}
-                max={40000}
-              />
-            </div>
-            <div className="bg-black/30 rounded-lg p-2 sm:p-2.5">
-              <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
-                <span>Перигей (км)</span>
-                <span className="text-gray-600">hₚ</span>
-              </div>
-              <input
-                type="number"
-                value={Math.round(activeConfig.perigee)}
-                onChange={e => onUpdate(activeIndex, { perigee: Number(e.target.value) })}
-                className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
-                min={150}
-                max={40000}
-              />
-            </div>
-            <div className="bg-black/30 rounded-lg p-2 sm:p-2.5">
-              <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
-                <span>Наклонение (°)</span>
-                <span className="text-gray-600">i</span>
-              </div>
-              <input
-                type="number"
-                value={activeConfig.inclination.toFixed(1)}
-                onChange={e => onUpdate(activeIndex, { inclination: Number(e.target.value) })}
-                className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
-                min={0}
-                max={180}
-                step={0.1}
-              />
+                  }}
+                  className={`px-3 py-2 rounded-lg text-xs font-semibold text-left border transition-all ${
+                    activeConfig.orbitType === orbit.id
+                      ? 'bg-cyan-500/20 border-cyan-400/60 text-cyan-300'
+                      : 'bg-black/30 border-white/10 text-gray-400 hover:text-gray-200 hover:border-white/20'
+                  }`}
+                >
+                  {orbit.name}
+                  {orbit.id !== 'CUSTOM' && ORBIT_TYPES[orbit.id] && (
+                    <span className="block text-[10px] text-gray-500 mt-0.5">
+                      {(ORBIT_TYPES[orbit.id].altitude / 1000).toFixed(0)} км, {ORBIT_TYPES[orbit.id].inclination}°
+                    </span>
+                  )}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Row 2: RAAN, ArgPerigee */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
-            <div className="bg-black/30 rounded-lg p-2 sm:p-2.5">
-              <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
-                <span>RAAN (°)</span>
-                <span className="text-gray-600">Ω</span>
-              </div>
-              <input
-                type="number"
-                value={Math.round(activeConfig.raan)}
-                onChange={e => onUpdate(activeIndex, { raan: Math.max(0, Math.min(360, Number(e.target.value))) })}
-                className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
-                min={0}
-                max={360}
-                step={1}
-              />
-              <div className="text-[9px] text-gray-600 mt-1 hidden sm:block">Долгота восход. узла (0–360°)</div>
-            </div>
-            <div className="bg-black/30 rounded-lg p-2 sm:p-2.5">
-              <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
-                <span>Арг. перигея (°)</span>
-                <span className="text-gray-600">ω</span>
-              </div>
-              <input
-                type="number"
-                value={Math.round(activeConfig.argPerigee)}
-                onChange={e => onUpdate(activeIndex, { argPerigee: Math.max(0, Math.min(360, Number(e.target.value))) })}
-                className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
-                min={0}
-                max={360}
-                step={1}
-              />
-              <div className="text-[9px] text-gray-600 mt-1 hidden sm:block">Поворот эллипса (0–360°)</div>
+          {/* CubeSat type */}
+          <div className="mb-4">
+            <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">ТИП CUBESAT</label>
+            <div className="flex gap-2">
+              {CUBESAT_OPTIONS.map(opt => (
+                <button
+                  key={opt.type}
+                  onClick={() => onUpdate(activeIndex, { cubeSatType: opt.type })}
+                  className={`flex-1 px-3 py-2 rounded-lg border text-center transition-all ${
+                    activeConfig.cubeSatType === opt.type
+                      ? 'bg-emerald-500/20 border-emerald-400/60 text-emerald-300'
+                      : 'bg-black/30 border-white/10 text-gray-400 hover:text-gray-200 hover:border-white/20'
+                  }`}
+                >
+                  <div className="text-sm font-bold">{opt.label}</div>
+                  <div className="text-[10px] text-gray-500">{opt.mass}</div>
+                  <div className="text-[9px] text-gray-600">{opt.desc}</div>
+                </button>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* ---- DERIVED PARAMETERS (read-only) ---- */}
-        <div className="rounded-lg bg-black/20 border border-gray-700/30 p-2 sm:p-3">
-          <div className="text-[10px] text-gray-500 font-semibold mb-2 tracking-wider">ПРОИЗВОДНЫЕ ПАРАМЕТРЫ</div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <div>
-              <div className="text-[9px] text-gray-600">Большая полуось</div>
-              <div className="text-xs text-gray-300 font-mono">{derivedParams.semiMajorAxis.toFixed(0)} км</div>
+          {/* ---- KEPLERIAN ORBITAL ELEMENTS ---- */}
+          <div className="mb-3">
+            <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">
+              ЭЛЕМЕНТЫ ОРБИТЫ (КЕО)
+            </label>
+
+            {/* Row 1: Apogee, Perigee, Inclination */}
+            <div className="grid grid-cols-3 gap-3 mb-3">
+              <div className="bg-black/30 rounded-lg p-2.5">
+                <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
+                  <span>Апогей (км)</span>
+                  <span className="text-gray-600">hₐ</span>
+                </div>
+                <input
+                  type="number"
+                  value={Math.round(activeConfig.apogee)}
+                  onChange={e => onUpdate(activeIndex, { apogee: Number(e.target.value) })}
+                  className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
+                  min={200}
+                  max={40000}
+                />
+              </div>
+              <div className="bg-black/30 rounded-lg p-2.5">
+                <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
+                  <span>Перигей (км)</span>
+                  <span className="text-gray-600">hₚ</span>
+                </div>
+                <input
+                  type="number"
+                  value={Math.round(activeConfig.perigee)}
+                  onChange={e => onUpdate(activeIndex, { perigee: Number(e.target.value) })}
+                  className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
+                  min={150}
+                  max={40000}
+                />
+              </div>
+              <div className="bg-black/30 rounded-lg p-2.5">
+                <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
+                  <span>Наклонение (°)</span>
+                  <span className="text-gray-600">i</span>
+                </div>
+                <input
+                  type="number"
+                  value={activeConfig.inclination.toFixed(1)}
+                  onChange={e => onUpdate(activeIndex, { inclination: Number(e.target.value) })}
+                  className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
+                  min={0}
+                  max={180}
+                  step={0.1}
+                />
+              </div>
             </div>
-            <div>
-              <div className="text-[9px] text-gray-600">Эксцентриситет</div>
-              <div className="text-xs text-gray-300 font-mono">{derivedParams.eccentricity.toFixed(4)}</div>
+
+            {/* Row 2: RAAN, ArgPerigee */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-black/30 rounded-lg p-2.5">
+                <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
+                  <span>RAAN — Долгота восход. узла (°)</span>
+                  <span className="text-gray-600">Ω</span>
+                </div>
+                <input
+                  type="number"
+                  value={Math.round(activeConfig.raan)}
+                  onChange={e => onUpdate(activeIndex, { raan: Math.max(0, Math.min(360, Number(e.target.value))) })}
+                  className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
+                  min={0}
+                  max={360}
+                  step={1}
+                />
+                <div className="text-[9px] text-gray-600 mt-1">Вращение плоскости орбиты (0–360°)</div>
+              </div>
+              <div className="bg-black/30 rounded-lg p-2.5">
+                <div className="text-[10px] text-gray-500 mb-1 flex items-center justify-between">
+                  <span>Аргумент перигея (°)</span>
+                  <span className="text-gray-600">ω</span>
+                </div>
+                <input
+                  type="number"
+                  value={Math.round(activeConfig.argPerigee)}
+                  onChange={e => onUpdate(activeIndex, { argPerigee: Math.max(0, Math.min(360, Number(e.target.value))) })}
+                  className="w-full bg-transparent text-white font-mono text-sm font-bold outline-none border-b border-cyan-400/20 focus:border-cyan-400/50 transition-colors"
+                  min={0}
+                  max={360}
+                  step={1}
+                />
+                <div className="text-[9px] text-gray-600 mt-1">Поворот эллипса в плоскости (0–360°)</div>
+              </div>
             </div>
-            <div>
-              <div className="text-[9px] text-gray-600">Период обращения</div>
-              <div className="text-xs text-gray-300 font-mono">{derivedParams.period.toFixed(1)} мин</div>
-            </div>
-            <div>
-              <div className="text-[9px] text-gray-600">V пери/апо</div>
-              <div className="text-xs text-gray-300 font-mono">{derivedParams.vPerigee.toFixed(2)} / {derivedParams.vApogee.toFixed(2)}</div>
+          </div>
+
+          {/* ---- DERIVED PARAMETERS (read-only) ---- */}
+          <div className="rounded-lg bg-black/20 border border-gray-700/30 p-3">
+            <div className="text-[10px] text-gray-500 font-semibold mb-2 tracking-wider">ПРОИЗВОДНЫЕ ПАРАМЕТРЫ</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div>
+                <div className="text-[9px] text-gray-600">Большая полуось</div>
+                <div className="text-xs text-gray-300 font-mono">{derivedParams.semiMajorAxis.toFixed(0)} км</div>
+              </div>
+              <div>
+                <div className="text-[9px] text-gray-600">Эксцентриситет</div>
+                <div className="text-xs text-gray-300 font-mono">{derivedParams.eccentricity.toFixed(4)}</div>
+              </div>
+              <div>
+                <div className="text-[9px] text-gray-600">Период обращения</div>
+                <div className="text-xs text-gray-300 font-mono">{derivedParams.period.toFixed(1)} мин</div>
+              </div>
+              <div>
+                <div className="text-[9px] text-gray-600">V пери/апо</div>
+                <div className="text-xs text-gray-300 font-mono">{derivedParams.vPerigee.toFixed(2)} / {derivedParams.vApogee.toFixed(2)} км/с</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Summary */}
-      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3">
+      {/* Summary (always visible) */}
+      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 max-h-36 overflow-y-auto shrink-0 scroll-inner">
         <h4 className="text-xs text-gray-500 font-semibold mb-2 tracking-wider">
           ИТОГО: {configs.length} наноспутник{configs.length > 1 ? 'ов' : ''}
         </h4>
-        <div className="space-y-1 max-h-28 overflow-y-auto scroll-inner">
+        <div className="space-y-1">
           {configs.map((cfg, i) => {
             const orbitName = cfg.orbitType !== 'CUSTOM' ? ORBIT_TYPES[cfg.orbitType]?.nameRu || cfg.orbitType : 'Произвольная';
             const isCurrentPreset = cfg.orbitType !== 'CUSTOM';
@@ -576,7 +576,7 @@ function NanoSatConfigStep({
               cfg.argPerigee !== 0
             );
             return (
-              <div key={i} className="flex items-center gap-1.5 text-xs">
+              <div key={i} className="flex items-center gap-2 text-xs">
                 <span className={`w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold shrink-0 ${i === activeIndex ? 'bg-cyan-500/30 text-cyan-400' : 'bg-gray-800 text-gray-500'}`}>
                   {i + 1}
                 </span>
@@ -602,19 +602,19 @@ function NanoSatConfigStep({
 
       {/* Validation warning */}
       {!allValid && (
-        <div className="text-red-400 text-xs">
+        <div className="text-red-400 text-xs mb-3 shrink-0">
           ⚠ Проверьте параметры: перигей ≥ 150 км, апогей ≥ 200 км, перигей ≤ апогей, наклонение 0–180°
         </div>
       )}
 
       {/* Start button */}
-      <div className="flex justify-center pt-2 pb-2 safe-bottom">
+      <div className="flex justify-center gap-4 shrink-0 pt-2">
         <button
           onClick={onStart}
           disabled={!allValid}
-          className={`px-6 sm:px-8 py-3 rounded-xl font-bold text-base sm:text-lg transition-all min-h-[48px] touch-btn w-full max-w-sm ${
+          className={`px-8 py-3 rounded-xl font-bold text-lg transition-all hover:scale-105 touch-btn ${
             allValid
-              ? 'bg-cyan-500 hover:bg-cyan-400 text-black shadow-lg hover:shadow-cyan-500/30 active:scale-95'
+              ? 'bg-cyan-500 hover:bg-cyan-400 text-black shadow-lg hover:shadow-cyan-500/30'
               : 'bg-gray-700 text-gray-500 cursor-not-allowed'
           }`}
         >
@@ -664,26 +664,26 @@ function DebrisConfigStep({
       initial={{ opacity: 0, x: 30 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -30 }}
-      className="flex flex-col gap-3"
+      className="w-full max-w-3xl flex flex-col"
     >
-      <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-1 py-2 px-1 touch-btn self-start">
+      <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm mb-3 flex items-center gap-1 shrink-0">
         ← Изменить количество
       </button>
 
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1 shrink-0">
         🗑 Выбор объектов для утилизации
       </h2>
-      <p className="text-gray-400 text-sm">
+      <p className="text-gray-400 text-sm mb-4 shrink-0">
         Выберите космический мусор и тип захватного устройства для каждого объекта. Общая масса: <span className="text-orange-400 font-bold">{totalMass.toFixed(0)} кг</span>
       </p>
 
       {/* Target selector tabs */}
-      <div className="flex gap-1.5 flex-wrap">
+      <div className="flex gap-1.5 mb-4 flex-wrap shrink-0">
         {configs.map((_, i) => (
           <button
             key={i}
             onClick={() => setActiveIndex(i)}
-            className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all border min-h-[36px] touch-btn ${
+            className={`px-3 py-1.5 rounded-lg text-sm font-bold transition-all border ${
               activeIndex === i
                 ? 'bg-orange-500/20 border-orange-400/60 text-orange-300'
                 : 'bg-black/40 border-white/10 text-gray-500 hover:text-gray-300 hover:border-white/20'
@@ -694,93 +694,95 @@ function DebrisConfigStep({
         ))}
       </div>
 
-      {/* Configuration card */}
-      <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-3 sm:p-4 md:p-5">
-        <h3 className="text-base sm:text-lg font-bold text-white mb-3">
-          Цель #{activeIndex + 1}
-        </h3>
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto pr-1 min-h-0 scroll-inner">
+        <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-5 mb-4">
+          <h3 className="text-lg font-bold text-white mb-3">
+            Цель #{activeIndex + 1}
+          </h3>
 
-        {/* Debris selection grid */}
-        <div className="mb-4">
-          <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">ОБЪЕКТ МУСОРА</label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-52 overflow-y-auto pr-1 scroll-inner">
-            {DEBRIS_DATABASE.map(debris => {
-              const dc = difficultyColors[debris.difficulty] || difficultyColors[3];
-              const isSelected = activeConfig.debrisId === debris.id;
-              return (
-                <button
-                  key={debris.id}
-                  onClick={() => onUpdate(activeIndex, {
-                    debrisId: debris.id,
-                    captureType: debris.recommendedCapture,
-                  })}
-                  className={`text-left px-3 py-2 rounded-lg border transition-all min-h-[44px] ${
-                    isSelected
-                      ? 'bg-orange-500/15 border-orange-400/60'
-                      : 'bg-black/30 border-white/10 hover:border-white/20 hover:bg-black/40'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2 mb-1">
-                    <span className={`text-xs font-bold ${isSelected ? 'text-orange-300' : 'text-white'}`}>
-                      {debris.name}
-                    </span>
-                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${dc.bg} ${dc.text} border border-current/20`}>
-                      {'★'.repeat(debris.difficulty)}
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[10px] text-gray-500">
-                    <span>{debris.mass} кг</span>
-                    <span>{debris.orbit.altitude} км</span>
-                    <span>{debris.orbit.inclination}°</span>
-                    <span className="text-gray-600 hidden sm:inline">{debris.origin}</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Capture type */}
-        <div className="mb-3">
-          <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">МЕХАНИЗМ ЗАХВАТА</label>
-          <div className="flex gap-2">
-            {CAPTURE_TYPES.map(ct => (
-              <button
-                key={ct.type}
-                onClick={() => onUpdate(activeIndex, { captureType: ct.type })}
-                className={`flex-1 px-2 sm:px-3 py-2 rounded-lg border text-center transition-all min-h-[44px] ${
-                  activeConfig.captureType === ct.type
-                    ? 'bg-cyan-500/15 border-cyan-400/60 text-cyan-300'
-                    : 'bg-black/30 border-white/10 text-gray-400 hover:text-gray-200 hover:border-white/20'
-                }`}
-              >
-                <div className="text-lg mb-0.5">{ct.icon}</div>
-                <div className="text-xs font-bold">{ct.label}</div>
-                {activeDebris?.recommendedCapture === ct.type && (
-                  <div className="text-[9px] text-yellow-400 mt-0.5">РЕКОМЕНДОВАН</div>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Selected debris info */}
-        {activeDebris && (
-          <div className="bg-black/30 rounded-lg p-3 text-xs text-gray-400">
-            <p className="text-gray-300 mb-1">{activeDebris.description}</p>
-            <div className="flex flex-wrap gap-2">
-              <span>Тип: {activeDebris.type === 'rocket_stage' ? 'Ступень РН' : activeDebris.type === 'dead_sat' ? 'Спутник' : 'Фрагмент'}</span>
-              <span>Материал: {activeDebris.material}</span>
-              <span>Вращение: {(activeDebris.tumbleRate.x + activeDebris.tumbleRate.y + activeDebris.tumbleRate.z).toFixed(1)} °/с</span>
+          {/* Debris selection grid */}
+          <div className="mb-4">
+            <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">ОБЪЕКТ МУСОРА</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-60 overflow-y-auto pr-1 scroll-inner">
+              {DEBRIS_DATABASE.map(debris => {
+                const dc = difficultyColors[debris.difficulty] || difficultyColors[3];
+                const isSelected = activeConfig.debrisId === debris.id;
+                return (
+                  <button
+                    key={debris.id}
+                    onClick={() => onUpdate(activeIndex, {
+                      debrisId: debris.id,
+                      captureType: debris.recommendedCapture,
+                    })}
+                    className={`text-left px-3 py-2 rounded-lg border transition-all ${
+                      isSelected
+                        ? 'bg-orange-500/15 border-orange-400/60'
+                        : 'bg-black/30 border-white/10 hover:border-white/20 hover:bg-black/40'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <span className={`text-xs font-bold ${isSelected ? 'text-orange-300' : 'text-white'}`}>
+                        {debris.name}
+                      </span>
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${dc.bg} ${dc.text} border border-current/20`}>
+                        {'★'.repeat(debris.difficulty)}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2 text-[10px] text-gray-500">
+                      <span>{debris.mass} кг</span>
+                      <span>{debris.orbit.altitude} км</span>
+                      <span>{debris.orbit.inclination}°</span>
+                      <span className="text-gray-600">{debris.origin}</span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
-        )}
+
+          {/* Capture type */}
+          <div className="mb-3">
+            <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">МЕХАНИЗМ ЗАХВАТА</label>
+            <div className="flex gap-2">
+              {CAPTURE_TYPES.map(ct => (
+                <button
+                  key={ct.type}
+                  onClick={() => onUpdate(activeIndex, { captureType: ct.type })}
+                  className={`flex-1 px-3 py-2 rounded-lg border text-center transition-all ${
+                    activeConfig.captureType === ct.type
+                      ? 'bg-cyan-500/15 border-cyan-400/60 text-cyan-300'
+                      : 'bg-black/30 border-white/10 text-gray-400 hover:text-gray-200 hover:border-white/20'
+                  }`}
+                >
+                  <div className="text-lg mb-0.5">{ct.icon}</div>
+                  <div className="text-xs font-bold">{ct.label}</div>
+                  {activeDebris?.recommendedCapture === ct.type && (
+                    <div className="text-[9px] text-yellow-400 mt-0.5">РЕКОМЕНДОВАН</div>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Selected debris info */}
+          {activeDebris && (
+            <div className="bg-black/30 rounded-lg p-3 text-xs text-gray-400">
+              <p className="text-gray-300 mb-1">{activeDebris.description}</p>
+              <div className="flex flex-wrap gap-3">
+                <span>Тип: {activeDebris.type === 'rocket_stage' ? 'Ступень РН' : activeDebris.type === 'dead_sat' ? 'Спутник' : 'Фрагмент'}</span>
+                <span>Материал: {activeDebris.material}</span>
+                <span>Вращение: {(activeDebris.tumbleRate.x + activeDebris.tumbleRate.y + activeDebris.tumbleRate.z).toFixed(1)} °/с</span>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Summary */}
-      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3">
+      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 shrink-0">
         <h4 className="text-xs text-gray-500 font-semibold mb-2 tracking-wider">ИТОГО: {configs.length} объектов ({totalMass.toFixed(0)} кг)</h4>
-        <div className="space-y-1 max-h-28 overflow-y-auto scroll-inner">
+        <div className="space-y-1">
           {configs.map((cfg, i) => {
             const d = DEBRIS_DATABASE.find(dd => dd.id === cfg.debrisId);
             return (
@@ -800,10 +802,10 @@ function DebrisConfigStep({
       </div>
 
       {/* Start button */}
-      <div className="flex justify-center pt-2 pb-2 safe-bottom">
+      <div className="flex justify-center gap-4 shrink-0 pt-2">
         <button
           onClick={onStart}
-          className="px-6 sm:px-8 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-black font-bold text-base sm:text-lg transition-all hover:scale-105 shadow-lg hover:shadow-orange-500/30 active:scale-95 touch-btn w-full max-w-sm"
+          className="px-8 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-black font-bold text-lg transition-all hover:scale-105 shadow-lg hover:shadow-orange-500/30 touch-btn"
         >
           🚀 Начать миссию ({configs.length} объект{configs.length > 1 ? 'ов' : ''})
         </button>

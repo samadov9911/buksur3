@@ -124,14 +124,7 @@
 }
 
 /* === VIEWPORT — critical for mobile browsers === */
-html, body {
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-  overscroll-behavior: none;
-}
-/* Allow inner scrollable areas on overlay screens */
-main {
+html, body, main {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
@@ -143,10 +136,8 @@ main {
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
+  /* Smooth momentum scroll on iOS */
   scroll-behavior: smooth;
-  /* Fix iOS rubber-banding inside scrollable overlays */
-  position: relative;
-  z-index: 1;
 }
 
 /* Inner scrollable areas within game screens */
@@ -156,9 +147,6 @@ main {
   touch-action: pan-y;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.15) transparent;
-  /* Ensure scroll containers take available space and don't overflow parent */
-  min-height: 0;
-  flex-shrink: 1;
 }
 
 .scroll-inner::-webkit-scrollbar {
@@ -217,14 +205,5 @@ main {
   .touch-btn {
     min-height: 44px;
     min-width: 44px;
-  }
-  /* Prevent text selection and zoom on double-tap for game buttons */
-  button {
-    -webkit-tap-highlight-color: transparent;
-  }
-  /* Prevent iOS input zoom */
-  input[type="text"],
-  input[type="number"] {
-    font-size: 16px !important;
   }
 }
