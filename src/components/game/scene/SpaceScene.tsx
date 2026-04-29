@@ -798,7 +798,7 @@ function CameraController({ followTarget, view, tugRotation }: {
         const q = _tmpQ.current.setFromEuler(tugRotation);
         smoothQuat.current.copy(q);
         smoothPos.current.copy(followTarget);
-        targetFov.current = 50;
+        targetFov.current = 70;
       } else if (view === 'tug') {
         smoothPos.current.copy(followTarget).add(new THREE.Vector3(0, 0.05 * TUG_SCALE, -0.15 * TUG_SCALE));
         smoothQuat.current.identity();
@@ -820,11 +820,24 @@ function CameraController({ followTarget, view, tugRotation }: {
     _fwd.current.set(0, 0, 1).applyQuaternion(tugQuat).normalize();
     const up = _up.current.set(0, 1, 0);
 
-    // ── COCKPIT: Smooth FPV — SLERP rotation + lerp position ──
+    // ── COCKPIT: True FPV from tug's nose — see captures & deployments ──
     if (view === 'cockpit') {
-      // Desired position: small offset forward and up from tug center
-      const eyeOffset = _tmpV.current.copy(_fwd.current).multiplyScalar(0.014 * TUG_SCALE)
-        .add(up.clone().multiplyScalar(0.008 * TUG_SCALE));
+      // Camera sits at the front-top of the tug body, just in front of the
+      // deploy container. From here you can see:
+      //   - Nanosat ejection (container is above, cubesat slides forward)
+      //   - Capture mechanisms (harpoon/manipulator/net extend forward)
+      //   - Space ahead without obstruction from solar panels or body
+      //
+      // Body front edge: +BODY_D/2 * TUG_SCALE = +0.0022
+      // Capture mechanism tip: up to +0.035 * TUG_SCALE = +0.007 ahead
+      // Container top: TOP_Y + TOP_H/2 = +0.012 * TUG_SCALE = +0.0024 above
+      // Solar panels: at ±0.032 * TUG_SCALE = ±0.0064 sideways (clear view)
+      //
+      // Position: just in front of body top, slightly elevated
+      const eyeForward = 0.013 * TUG_SCALE;  // slightly ahead of body front edge
+      const eyeUp = 0.012 * TUG_SCALE;       // at container top level
+      const eyeOffset = _tmpV.current.copy(_fwd.current).multiplyScalar(eyeForward)
+        .add(up.clone().multiplyScalar(eyeUp));
       const desiredCockpitPos = _tmpV.current.copy(followTarget).add(eyeOffset);
 
       // Frame-rate independent smoothing (fast but filters jitter)
@@ -836,16 +849,24 @@ function CameraController({ followTarget, view, tugRotation }: {
       camera.position.copy(smoothPos.current);
 
       // Smooth quaternion (SLERP) — eliminates jitter from physics angular velocity
-      smoothQuat.current.slerp(tugQuat, cockpitRotSmooth);
+      // Apply a slight pitch-down (10°) so the camera looks toward the action area
+      // (captures/deployments happen in front and slightly below eye level)
+      const pitchDownQ = new THREE.Quaternion().setFromAxisAngle(
+        new THREE.Vector3(1, 0, 0), -0.17 // ~10° pitch down
+      );
+      const targetCockpitQ = tugQuat.clone().multiply(pitchDownQ);
+      smoothQuat.current.slerp(targetCockpitQ, cockpitRotSmooth);
       camera.quaternion.copy(smoothQuat.current);
 
-      // FOV — 50° for realistic FPV perspective (65° causes fish-eye distortion)
-      if (Math.abs(camera.fov - 50) > 0.1) {
+      // FOV — 70° for wider FPV view (see captures, deployments, surroundings)
+      // 50° was too narrow for practical gameplay
+      const cockpitFov = 70;
+      if (Math.abs(camera.fov - cockpitFov) > 0.1) {
         // eslint-disable-next-line react-hooks/immutability
-        camera.fov += (50 - camera.fov) * 0.15;
+        camera.fov += (cockpitFov - camera.fov) * 0.15;
         camera.updateProjectionMatrix();
       } else {
-        camera.fov = 50;
+        camera.fov = cockpitFov;
         camera.updateProjectionMatrix();
       }
       return;
