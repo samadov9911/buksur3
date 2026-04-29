@@ -490,7 +490,14 @@ export function useGameEngine() {
     const mobileInput = gs.mobileInput;
     const isMobileActive = Math.abs(mobileInput.orientX) > 0.05 || Math.abs(mobileInput.orientY) > 0.05
       || Math.abs(mobileInput.thrustX) > 0.05 || Math.abs(mobileInput.thrustY) > 0.05
-      || gs.mobileRoll !== 0 || gs.thrust;
+      || gs.mobileRoll !== 0 || gs.mobileThrustActive || gs.manualThrust !== 0;
+
+    // Reset thrust flag from previous frame — prevents feedback loop where
+    // engine sets gs.thrust=true → isMobileActive=true → mobile path keeps thrust on forever
+    // Only reset for keyboard/desktop path (not gamepad, which manages its own state)
+    if (gs.thrust && !(gamepadInput?.connected)) {
+      useGameStore.getState().setThrust(false);
+    }
 
     if (gamepadInput && gamepadInput.connected) {
       thrustForce = -gamepadInput.rightStickY * spec.thrust;

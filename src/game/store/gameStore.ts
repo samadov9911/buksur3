@@ -130,6 +130,8 @@ export interface GameState {
   thrustDirection: Vec3;
   /** Ручная тяга с кнопок десктопа: 1 = вперёд, -1 = назад, 0 = выкл */
   manualThrust: number;
+  /** Мобильные кнопки тяги активно (для детекции мобильного ввода) */
+  mobileThrustActive: boolean;
 
   // ---- Состояние цели (режим janitor) ----------------------------
   /** ID мусорных объектов для очистки */
@@ -318,6 +320,7 @@ const initialState: GameState = {
   thrust: false,
   thrustDirection: { x: 0, y: 0, z: 1 },
   manualThrust: 0,
+  mobileThrustActive: false,
 
   // Цель (janitor)
   targetDebrisIds: [],
@@ -442,6 +445,7 @@ export interface GameActions {
   /** Включить/выключить тягу, опционально задать направление */
   setThrust: (on: boolean, direction?: Vec3) => void;
   setManualThrust: (dir: number) => void;
+  setMobileThrust: (on: boolean) => void;
 
   // ---- Цель (janitor) --------------------------------------------
   /** Выбрать цель по ID */
@@ -661,6 +665,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
         deployProgress: 0,
         captureState: 'approaching' as CaptureState,
         deploymentState: 'approaching' as DeploymentState,
+        // Reset thrust state
+        thrust: false,
+        manualThrust: 0,
+        mobileThrustActive: false,
         // Don't reset missionTargets/currentTargetIndex — they may be needed for multi-target missions
       };
     }),
@@ -692,6 +700,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isPaused: true,
         thrust: false,
         manualThrust: 0,
+        mobileThrustActive: false,
         screen: 'results' as GameScreen,
         // Stop all capture/deploy animations on game end
         captureState: 'approaching' as CaptureState,
@@ -745,6 +754,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   setManualThrust: (dir) =>
     set({ manualThrust: dir, thrust: dir !== 0 }),
+
+  setMobileThrust: (on) =>
+    set({ mobileThrustActive: on, thrust: on }),
 
   // ============================================================
   // Цель (режим janitor)

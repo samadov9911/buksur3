@@ -290,12 +290,12 @@ function ThrustButtons({ isPortrait }: { isPortrait: boolean }) {
 
   const handleThrustStart = useCallback(() => {
     setThrustActive(true);
-    useGameStore.getState().setThrust(true);
+    useGameStore.getState().setMobileThrust(true);
   }, []);
 
   const handleThrustEnd = useCallback(() => {
     setThrustActive(false);
-    useGameStore.getState().setThrust(false);
+    useGameStore.getState().setMobileThrust(false);
   }, []);
 
   return (
@@ -303,9 +303,9 @@ function ThrustButtons({ isPortrait }: { isPortrait: boolean }) {
       <span className="text-[6px] text-cyan-500/50 font-semibold tracking-wider">ТЯГА</span>
       <div className="flex gap-0.5">
         <button
-          onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setThrust(true); }}
-          onTouchEnd={(e) => { e.preventDefault(); useGameStore.getState().setThrust(false); }}
-          onTouchCancel={() => useGameStore.getState().setThrust(false)}
+          onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setMobileThrust(true); }}
+          onTouchEnd={(e) => { e.preventDefault(); useGameStore.getState().setMobileThrust(false); }}
+          onTouchCancel={() => useGameStore.getState().setMobileThrust(false)}
           className={`${isPortrait ? 'w-10' : 'w-11'} ${btnH} rounded border flex items-center justify-center transition-all bg-red-950/30 border-red-500/30 active:bg-red-500/25`}
         >
           <svg width={isPortrait ? 10 : 12} height={isPortrait ? 10 : 12} viewBox="0 0 16 16" fill="none">
