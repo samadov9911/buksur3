@@ -13,6 +13,7 @@ export default function TugConfigPanel({ onClose }: { onClose: () => void }) {
   const tugPayloadMass = useGameStore(s => s.tugPayloadMass);
   const tugThrustOverride = useGameStore(s => s.tugThrustOverride);
   const tugIspOverride = useGameStore(s => s.tugIspOverride);
+  const tugFuelReserve = useGameStore(s => s.tugFuelReserve);
   const fuelMass = useGameStore(s => s.fuelMass);
   const captureType = useGameStore(s => s.captureType);
 
@@ -96,6 +97,28 @@ export default function TugConfigPanel({ onClose }: { onClose: () => void }) {
           }
         />
 
+        {/* === ЗАПАС ТОПЛИВА === */}
+        <ConfigSlider
+          label="Запас топлива"
+          unit="кг"
+          min={1}
+          max={3000}
+          step={1}
+          value={tugFuelReserve}
+          defaultValue={23}
+          onChange={(v) => useGameStore.getState().setTugFuelReserve(v)}
+          onReset={() => useGameStore.getState().setTugFuelReserve(23)}
+          color="amber"
+          icon={
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="4" y="3" width="6" height="10" rx="1" stroke="#fbbf24" strokeWidth="1.5" fill="none" />
+              <rect x="10" y="5" width="2" height="3" rx="0.5" stroke="#fbbf24" strokeWidth="1" fill="none" />
+              <line x1="5" y1="8" x2="9" y2="8" stroke="#fbbf24" strokeWidth="0.8" opacity="0.5" />
+              <line x1="5" y1="10" x2="9" y2="10" stroke="#fbbf24" strokeWidth="0.8" opacity="0.5" />
+            </svg>
+          }
+        />
+
         {/* === МАССА ПОЛЕЗНОЙ НАГРУЗКИ === */}
         <ConfigSlider
           label="Масса полезной нагрузки"
@@ -150,6 +173,7 @@ export default function TugConfigPanel({ onClose }: { onClose: () => void }) {
           <div className="grid grid-cols-2 gap-2">
             <CalcParam label="Сухая масса" value={`${baseSpec.dryMass} кг`} />
             <CalcParam label="Масса топлива" value={`${fuelMass.toFixed(0)} кг`} />
+            <CalcParam label="Запас топлива" value={`${tugFuelReserve} кг`} color="text-amber-400" />
             <CalcParam label="Масса нагрузки" value={`${tugPayloadMass} кг`} />
             <CalcParam
               label="Полная масса"
@@ -174,6 +198,7 @@ export default function TugConfigPanel({ onClose }: { onClose: () => void }) {
           <div className="text-[11px] text-gray-400 space-y-1 bg-gray-800/30 rounded-lg p-3">
             <p>• <span className="text-gray-300">Тяга</span> — сила плазменного двигателя (Hall-effect)</p>
             <p>• <span className="text-gray-300">Isp</span> — удельный импульс, определяет эффективность расхода топлива</p>
+            <p>• <span className="text-gray-300">Топливо</span> — запас топлива на миссию (по умолчанию 23 кг)</p>
             <p>• <span className="text-gray-300">Нагрузка</span> — масса спутника или захваченного мусора</p>
             <p>• <span className="text-gray-300">ΔV</span> — запас характеристической скорости (формула Циолковского)</p>
           </div>
@@ -187,6 +212,7 @@ export default function TugConfigPanel({ onClose }: { onClose: () => void }) {
             useGameStore.getState().setTugThrustOverride(null);
             useGameStore.getState().setTugIspOverride(null);
             useGameStore.getState().setTugPayloadMass(0);
+            useGameStore.getState().setTugFuelReserve(23);
           }}
           className="flex-1 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl transition-colors text-sm font-medium"
         >

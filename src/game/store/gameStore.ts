@@ -236,6 +236,8 @@ export interface GameState {
   tugThrustOverride: number | null;
   /** Пользовательский удельный импульс (с), null = использовать стандартный */
   tugIspOverride: number | null;
+  /** Запас топлива (кг), default 23 */
+  tugFuelReserve: number;
   /** Показать панель характеристик буксира */
   showTugConfig: boolean;
 
@@ -371,6 +373,7 @@ const initialState: GameState = {
   tugPayloadMass: 0,
   tugThrustOverride: null,
   tugIspOverride: null,
+  tugFuelReserve: 23,
   showTugConfig: false,
 
   // Механики миссий
@@ -519,6 +522,8 @@ export interface GameActions {
   setTugThrustOverride: (thrust: number | null) => void;
   /** Установить пользовательский Isp (с), null для сброса */
   setTugIspOverride: (isp: number | null) => void;
+  /** Установить запас топлива (кг) */
+  setTugFuelReserve: (mass: number) => void;
   /** Показать/скрыть панель характеристик буксира */
   toggleTugConfig: () => void;
 
@@ -592,12 +597,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
     if (mission) {
       const tugSpec = mission.mode === 'nanosat' ? DEPLOYER_TUG : JANITOR_TUG;
       const g0 = 9.80665;
-      const maxDv = tugSpec.isp * g0 * Math.log(tugSpec.totalMass / tugSpec.dryMass);
+      const fuelReserve = get().tugFuelReserve;
+      const totalMass = tugSpec.dryMass + fuelReserve;
+      const maxDv = tugSpec.isp * g0 * Math.log(totalMass / tugSpec.dryMass);
       set({
         currentMissionId: missionId,
         currentMission: mission,
-        fuelMass: tugSpec.fuelMass,
-        initialFuelMass: tugSpec.fuelMass,
+        fuelMass: fuelReserve,
+        initialFuelMass: fuelReserve,
         maxDeltaV: maxDv,
         usedDeltaV: 0,
         remainingDeltaV: maxDv,
@@ -915,6 +922,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   setTugIspOverride: (isp) =>
     set({ tugIspOverride: isp !== null ? Math.max(100, Math.min(10000, isp)) : null }),
+
+  setTugFuelReserve: (mass) =>
+    set({ tugFuelReserve: Math.max(1, Math.min(5000, mass)) }),
 
   toggleTugConfig: () => set((state) => ({ showTugConfig: !state.showTugConfig })),
 

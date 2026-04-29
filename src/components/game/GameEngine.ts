@@ -24,7 +24,7 @@ import {
   circularOrbitalSpeed,
   atmosphericDensity,
 } from '@/game/engine/orbitalMechanics';
-import { R_EARTH, MU_EARTH, TIME_SCALE, ORBIT_TYPES } from '@/game/engine/constants';
+import { R_EARTH, MU_EARTH, J2, TIME_SCALE, ORBIT_TYPES } from '@/game/engine/constants';
 import { DEPLOYER_TUG, JANITOR_TUG } from '@/game/data/satellites';
 import { getMissionById } from '@/game/data/missions';
 import { getDebrisById } from '@/game/data/debris';
@@ -75,12 +75,30 @@ const DEPLOY_DURATION = 2.0;   // seconds sim-time
 // Deorbit retro-thrust acceleration (m/s²) — applied when captured debris is deorbited
 const DEORBIT_THRUST_ACCEL = 0.5;
 
-/** Gravitational acceleration at point (x, y, z) */
+/** Gravitational acceleration with J2 oblateness perturbation */
 function gravityAccel(x: number, y: number, z: number): { ax: number; ay: number; az: number } {
   const r = Math.sqrt(x * x + y * y + z * z);
   if (r < R_EARTH * 0.9) return { ax: 0, ay: 0, az: 0 };
   const gMag = -MU_EARTH / (r * r * r);
-  return { ax: gMag * x, ay: gMag * y, az: gMag * z };
+
+  // J2 oblateness perturbation
+  // The J2 term causes secular drift in RAAN and argument of perigee,
+  // and short-period oscillations in all elements.
+  const z2 = z * z;
+  const r2 = r * r;
+  const r5 = r2 * r2 * r;
+  const j2Factor = -1.5 * J2 * MU_EARTH * (R_EARTH * R_EARTH) / r5;
+
+  // J2 acceleration components (Vallado, "Fundamentals of Astrodynamics")
+  const j2Ax = j2Factor * x * (1 - 5 * z2 / r2);
+  const j2Ay = j2Factor * y * (1 - 5 * z2 / r2);
+  const j2Az = j2Factor * z * (3 - 5 * z2 / r2);
+
+  return {
+    ax: gMag * x + j2Ax,
+    ay: gMag * y + j2Ay,
+    az: gMag * z + j2Az,
+  };
 }
 
 /** Atmospheric drag using correct atmospheric density model */
@@ -103,6 +121,97 @@ function dragAccel(x: number, y: number, z: number, vx: number, vy: number, vz: 
     dvx: -actualDragDecel * (vx / speed) * dt,
     dvy: -actualDragDecel * (vy / speed) * dt,
     dvz: -actualDragDecel * (vz / speed) * dt,
+  };
+}
+
+// ============================================================
+// ORBITAL PERTURBATIONS
+// ============================================================
+
+// Solar radiation pressure constant
+// P_sr ≈ 4.56e-6 N/m² at 1 AU, Cr (reflectivity coefficient) ≈ 1.2
+// Am (area-to-mass ratio) ≈ 0.01 m²/kg for typical spacecraft
+const SRP_ACCEL = 4.56e-6 * 1.2 * 0.01; // ~5.5e-8 m/s²
+
+// Third-body gravitational parameters (m³/s²)
+// Moon: μ_Moon = 4.9048695e12
+// Sun: μ_Sun = 1.32712440018e20
+const MU_MOON = 4.9048695e12;
+const MU_SUN = 1.32712440018e20;
+// Average distances (m)
+const DIST_MOON = 3.844e8;    // ~384,400 km
+const DIST_SUN = 1.496e11;    // ~149.6 million km (1 AU)
+
+/** Solar radiation pressure acceleration (anti-sunward direction) */
+function solarRadiationPressureAccel(simTime: number): { ax: number; ay: number; az: number } {
+  // Sun direction rotates in the ecliptic; simplified as rotating in XY plane
+  // with a period of ~1 year. For game timescales this is essentially fixed.
+  const sunAngle = simTime * 1.991e-7; // ~1 revolution per year (rad/s)
+  const sunX = Math.cos(sunAngle);
+  const sunY = Math.sin(sunAngle);
+  const sunZ = 0.0; // simplified: Sun in ecliptic plane
+
+  // SRP pushes AWAY from the Sun
+  return {
+    ax: SRP_ACCEL * sunX,
+    ay: SRP_ACCEL * sunY,
+    az: SRP_ACCEL * sunZ,
+  };
+}
+
+/** Third-body gravitational perturbation (tidal acceleration from Moon/Sun) */
+function thirdBodyAccel(
+  x: number, y: number, z: number,
+  muThird: number,
+  thirdX: number, thirdY: number, thirdZ: number
+): { ax: number; ay: number; az: number } {
+  // Tidal acceleration: a = μ_third * ( (r_third - r_sat)/|r_third - r_sat|³ - r_third/|r_third|³ )
+  const dx = thirdX - x;
+  const dy = thirdY - y;
+  const dz = thirdZ - z;
+  const d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+  const d3 = d * d * d;
+
+  const r3 = Math.sqrt(thirdX * thirdX + thirdY * thirdY + thirdZ * thirdZ);
+  const r3_3 = r3 * r3 * r3;
+
+  return {
+    ax: muThird * (dx / d3 - thirdX / r3_3),
+    ay: muThird * (dy / d3 - thirdY / r3_3),
+    az: muThird * (dz / d3 - thirdZ / r3_3),
+  };
+}
+
+/** Combined perturbation acceleration (all non-central forces except drag) */
+function perturbationAccel(
+  x: number, y: number, z: number,
+  totalSimDt: number
+): { ax: number; ay: number; az: number } {
+  // Solar radiation pressure
+  const srp = solarRadiationPressureAccel(totalSimDt);
+
+  // Lunar gravity (Moon position: simplified circular orbit in XZ plane,
+  // inclined 5.14° to ecliptic, period ~27.3 days)
+  const moonPeriod = 27.3 * 86400; // seconds
+  const moonAngle = totalSimDt * 2 * Math.PI / moonPeriod;
+  const moonInc = 5.14 * Math.PI / 180;
+  const moonX = DIST_MOON * Math.cos(moonAngle);
+  const moonY = DIST_MOON * Math.sin(moonAngle) * Math.cos(moonInc);
+  const moonZ = DIST_MOON * Math.sin(moonAngle) * Math.sin(moonInc);
+  const moonAccel = thirdBodyAccel(x, y, z, MU_MOON, moonX, moonY, moonZ);
+
+  // Solar gravity (Sun position: same direction as SRP vector)
+  const sunPeriod = 365.25 * 86400; // seconds
+  const sunAngle = totalSimDt * 2 * Math.PI / sunPeriod;
+  const sunX = DIST_SUN * Math.cos(sunAngle);
+  const sunY = DIST_SUN * Math.sin(sunAngle);
+  const sunZ = 0.0;
+  const sunAccel = thirdBodyAccel(x, y, z, MU_SUN, sunX, sunY, sunZ);
+
+  return {
+    ax: srp.ax + moonAccel.ax + sunAccel.ax,
+    ay: srp.ay + moonAccel.ay + sunAccel.ay,
+    az: srp.az + moonAccel.az + sunAccel.az,
   };
 }
 
@@ -222,10 +331,12 @@ export function useGameEngine() {
       if (gs.fuelMass <= 0) {
         const tugSpec = gs.gameMode === 'janitor' ? JANITOR_TUG : DEPLOYER_TUG;
         const g0 = 9.80665;
-        const maxDv = tugSpec.isp * g0 * Math.log(tugSpec.totalMass / tugSpec.dryMass);
+        const fuelReserve = gs.tugFuelReserve || 23;
+        const totalMassForDv = tugSpec.dryMass + fuelReserve;
+        const maxDv = tugSpec.isp * g0 * Math.log(totalMassForDv / tugSpec.dryMass);
         useGameStore.setState({
-          fuelMass: tugSpec.fuelMass,
-          initialFuelMass: tugSpec.fuelMass,
+          fuelMass: fuelReserve,
+          initialFuelMass: fuelReserve,
           maxDeltaV: maxDv,
           usedDeltaV: 0,
           remainingDeltaV: maxDv,
@@ -582,20 +693,24 @@ export function useGameEngine() {
     let { x, y, z } = state.position;
     let { vx, vy, vz } = state.velocity;
 
+    // Compute perturbation accelerations once per frame (quasi-constant)
+    // Includes: J2 (in gravityAccel), SRP, Lunar tidal, Solar tidal
+    const perturb = perturbationAccel(x, y, z, totalSimDt);
+
     for (let step = 0; step < subSteps; step++) {
       const grav1 = gravityAccel(x, y, z);
-      const ax1 = grav1.ax + thrustAx;
-      const ay1 = grav1.ay + thrustAy;
-      const az1 = grav1.az + thrustAz;
+      const ax1 = grav1.ax + thrustAx + perturb.ax;
+      const ay1 = grav1.ay + thrustAy + perturb.ay;
+      const az1 = grav1.az + thrustAz + perturb.az;
 
       x += vx * subDt + 0.5 * ax1 * subDt * subDt;
       y += vy * subDt + 0.5 * ay1 * subDt * subDt;
       z += vz * subDt + 0.5 * az1 * subDt * subDt;
 
       const grav2 = gravityAccel(x, y, z);
-      const ax2 = grav2.ax + thrustAx;
-      const ay2 = grav2.ay + thrustAy;
-      const az2 = grav2.az + thrustAz;
+      const ax2 = grav2.ax + thrustAx + perturb.ax;
+      const ay2 = grav2.ay + thrustAy + perturb.ay;
+      const az2 = grav2.az + thrustAz + perturb.az;
 
       vx += 0.5 * (ax1 + ax2) * subDt;
       vy += 0.5 * (ay1 + ay2) * subDt;
@@ -704,9 +819,11 @@ export function useGameEngine() {
           useGameStore.getState().setCaptureState('captured');
           useGameStore.getState().addCapturedDebris(gs.currentTargetId || '');
           const debrisId = mission ? (mission as any).targetDebrisId : null;
+          let debrisMassKg = 0;
           if (debrisId) {
             const debris = getDebrisById(debrisId);
             if (debris) {
+              debrisMassKg = debris.mass;
               useGameStore.getState().setCapturedMass(debris.mass);
             }
           } else if (isCustom) {
@@ -715,9 +832,24 @@ export function useGameEngine() {
             if (currentTarget?.debris) {
               const debris = getDebrisById(currentTarget.debris.debrisId);
               if (debris) {
+                debrisMassKg = debris.mass;
                 useGameStore.getState().setCapturedMass(debris.mass);
               }
             }
+          }
+
+          // ── Momentum transfer: conservation of momentum ──
+          // m_tug * v_tug + m_debris * v_debris = (m_tug + m_debris) * v_new
+          // The debris velocity is the analytical target orbit velocity (targetVx/y/z)
+          if (debrisMassKg > 0) {
+            const tugMass = spec.dryMass + gs.fuelMass + gs.tugPayloadMass;
+            const totalMass = tugMass + debrisMassKg;
+            // Combined velocity from conservation of momentum
+            state.velocity.vx = (tugMass * state.velocity.vx + debrisMassKg * targetVx) / totalMass;
+            state.velocity.vy = (tugMass * state.velocity.vy + debrisMassKg * targetVy) / totalMass;
+            state.velocity.vz = (tugMass * state.velocity.vz + debrisMassKg * targetVz) / totalMass;
+            // Add debris mass to payload (affects thrust calculations going forward)
+            useGameStore.getState().setTugPayloadMass(gs.tugPayloadMass + debrisMassKg);
           }
         }
       } else if (cs === 'captured') {
