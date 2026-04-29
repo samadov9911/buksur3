@@ -701,10 +701,10 @@ function DebrisConfigStep({
             Цель #{activeIndex + 1}
           </h3>
 
-          {/* Debris selection grid */}
+          {/* Debris selection grid — scrollable on mobile */}
           <div className="mb-4">
             <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">ОБЪЕКТ МУСОРА</label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[50vh] md:max-h-none overflow-y-auto scroll-inner pr-1">
               {DEBRIS_DATABASE.map(debris => {
                 const dc = difficultyColors[debris.difficulty] || difficultyColors[3];
                 const isSelected = activeConfig.debrisId === debris.id;
