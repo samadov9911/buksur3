@@ -5,7 +5,7 @@
  */
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useGameStore } from '@/game/store/gameStore';
 import { getMissionById } from '@/game/data/missions';
@@ -533,6 +533,40 @@ export default function HUD({ distanceToTarget, relativeSpeed, timeRemaining, ca
               </div>
             </div>
           </div>
+
+          {/* Управление тягой — кнопки мышкой */}
+          {!isMobile && (
+          <div className="bg-black/60 backdrop-blur-sm rounded-xl border border-white/10 p-1.5 min-w-[150px] pointer-events-auto">
+            <span className="text-[8px] text-cyan-400/70 font-semibold tracking-wider">ТЯГА</span>
+            <div className="flex items-center gap-1 mt-1">
+              <button
+                onMouseDown={() => useGameStore.getState().setManualThrust(-1)}
+                onMouseUp={() => useGameStore.getState().setManualThrust(0)}
+                onMouseLeave={() => useGameStore.getState().setManualThrust(0)}
+                onContextMenu={(e) => e.preventDefault()}
+                className="flex-1 h-8 rounded-lg border flex items-center justify-center text-xs font-bold transition-all bg-gray-800 border-red-500/30 text-red-300 hover:text-red-200 hover:border-red-500/50 hover:bg-red-500/10 active:scale-95"
+                title="Ретроградная тяга (↓) — удерживать"
+              >
+                ▼
+              </button>
+              <button
+                onMouseDown={() => useGameStore.getState().setManualThrust(1)}
+                onMouseUp={() => useGameStore.getState().setManualThrust(0)}
+                onMouseLeave={() => useGameStore.getState().setManualThrust(0)}
+                onContextMenu={(e) => e.preventDefault()}
+                className={`flex-1 h-8 rounded-lg border flex items-center justify-center text-sm font-bold transition-all active:scale-95 ${
+                  thrust
+                    ? 'bg-cyan-500/30 border-cyan-400/60 text-cyan-200 shadow-lg shadow-cyan-500/20'
+                    : 'bg-gray-800 border-cyan-500/30 text-cyan-300 hover:text-cyan-200 hover:border-cyan-500/50 hover:bg-cyan-500/10'
+                }`}
+                title="Проградная тяга (↑) — удерживать"
+              >
+                ▲
+              </button>
+            </div>
+            <p className="text-[7px] text-gray-600 mt-1 text-center">↑ / ↓ или удерживать кнопку</p>
+          </div>
+          )}
 
           {/* Satellite count selector (nanosat mode only) */}
           {gameMode === 'nanosat' && (

@@ -128,6 +128,8 @@ export interface GameState {
   thrust: boolean;
   /** Направление тяги (нормализованный вектор) */
   thrustDirection: Vec3;
+  /** Ручная тяга с кнопок десктопа: 1 = вперёд, -1 = назад, 0 = выкл */
+  manualThrust: number;
 
   // ---- Состояние цели (режим janitor) ----------------------------
   /** ID мусорных объектов для очистки */
@@ -315,6 +317,7 @@ const initialState: GameState = {
   usedDeltaV: 0,
   thrust: false,
   thrustDirection: { x: 0, y: 0, z: 1 },
+  manualThrust: 0,
 
   // Цель (janitor)
   targetDebrisIds: [],
@@ -438,6 +441,7 @@ export interface GameActions {
   consumeFuel: (deltaV: number) => void;
   /** Включить/выключить тягу, опционально задать направление */
   setThrust: (on: boolean, direction?: Vec3) => void;
+  setManualThrust: (dir: number) => void;
 
   // ---- Цель (janitor) --------------------------------------------
   /** Выбрать цель по ID */
@@ -687,6 +691,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isGameOver: true,
         isPaused: true,
         thrust: false,
+        manualThrust: 0,
         screen: 'results' as GameScreen,
         // Stop all capture/deploy animations on game end
         captureState: 'approaching' as CaptureState,
@@ -737,6 +742,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
         thrustDirection: { x: direction.x, y: direction.y, z: direction.z },
       }),
     }),
+
+  setManualThrust: (dir) =>
+    set({ manualThrust: dir, thrust: dir !== 0 }),
 
   // ============================================================
   // Цель (режим janitor)

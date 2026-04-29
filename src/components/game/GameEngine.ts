@@ -513,6 +513,8 @@ export function useGameEngine() {
     } else if (keyboardInput) {
       if (keyboardInput['ArrowUp']) thrustForce = spec.thrust;
       if (keyboardInput['ArrowDown']) thrustForce = -spec.thrust;
+      // Desktop thrust buttons (from HUD)
+      if (gs.manualThrust !== 0) thrustForce = gs.manualThrust * spec.thrust;
       if (keyboardInput['ArrowLeft']) state.angularVel.y -= KB_ORIENT_RATE * sensitivity;
       if (keyboardInput['ArrowRight']) state.angularVel.y += KB_ORIENT_RATE * sensitivity;
       if (keyboardInput['KeyW']) state.angularVel.x -= KB_ORIENT_RATE * sensitivity;
