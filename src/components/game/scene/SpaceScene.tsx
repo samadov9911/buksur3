@@ -983,10 +983,10 @@ function ThermalGrid({ width, depth, height, y }: {
   );
 }
 
-/** Solar panel assembly — two rectangular panels on silver booms at 45° */
+/** Solar panel assembly — two rectangular panels on silver booms, fully deployed */
 function SolarPanelAssembly({ side }: { side: 'left' | 'right' }) {
   const xSign = side === 'left' ? -1 : 1;
-  const angle = side === 'left' ? Math.PI / 4 : -Math.PI / 4; // 45 degrees spread
+  const angle = 0; // Fully deployed — panels extend horizontally outward
 
   return (
     <group position={[xSign * BODY_W / 2, MID_Y, 0]} rotation={[0, 0, angle]}>

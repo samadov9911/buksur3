@@ -110,7 +110,7 @@ const nanosatMissions: NanoSatMission[] = [
     targetOrbitId: 'GTO',
     tolerance: { altitude: 100, inclination: 0.5 },
     requiredDeltaV: 2500,
-    startOrbit: { altitude: 200, inclination: 28.5 },
+    startOrbit: { altitude: 380, inclination: 28.5 },
     difficulty: 'expert',
     difficultyLabel: 'Эксперт',
     timeLimit: 600,
