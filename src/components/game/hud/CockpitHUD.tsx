@@ -12,11 +12,23 @@
  */
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useGameStore } from '@/game/store/gameStore';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { getMissionById } from '@/game/data/missions';
 import { ORBIT_TYPES } from '@/game/engine/constants';
+
+/** Определяет мобильное устройство (сенсорный экран + маленький viewport) */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768 || navigator.maxTouchPoints > 1);
+    check();
+    const mql = window.matchMedia('(max-width: 767px)');
+    mql.addEventListener('change', check);
+    return () => mql.removeEventListener('change', check);
+  }, []);
+  return isMobile;
+}
 
 /** Безопасное форматирование числа — заменяет NaN/undefined на '---' */
 function safeNum(v: number, decimals: number = 0): string {
@@ -53,7 +65,7 @@ export default function CockpitHUD() {
   const relativeSpeed = useGameStore(s => s.relativeSpeed);
   const missionTime = useGameStore(s => s.missionTime);
   const cameraView = useGameStore(s => s.cameraView);
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile(); // локальный хук — без проблем с минификацией
 
   // ---- Цикл переключения камеры (мобильная кнопка) ----
   const cycleCamera = () => {
