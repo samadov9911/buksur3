@@ -489,7 +489,8 @@ export function useGameEngine() {
     // Mobile joystick input (via Zustand store)
     const mobileInput = gs.mobileInput;
     const isMobileActive = Math.abs(mobileInput.orientX) > 0.05 || Math.abs(mobileInput.orientY) > 0.05
-      || Math.abs(mobileInput.thrustX) > 0.05 || Math.abs(mobileInput.thrustY) > 0.05;
+      || Math.abs(mobileInput.thrustX) > 0.05 || Math.abs(mobileInput.thrustY) > 0.05
+      || gs.mobileRoll !== 0 || gs.thrust;
 
     if (gamepadInput && gamepadInput.connected) {
       thrustForce = -gamepadInput.rightStickY * spec.thrust;
