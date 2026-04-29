@@ -178,7 +178,7 @@ export default function PreConfigScreen() {
   // ---- RENDER ----
   return (
     <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-hidden" style={{ height: '100dvh', height: '100vh' }}>
-      <div className="flex flex-col items-center w-full max-w-4xl px-4 py-6 md:px-8 md:py-8 safe-bottom min-h-0 flex-1">
+      <div className="flex flex-col items-center w-full max-w-4xl px-4 py-6 md:px-8 md:py-8 safe-bottom min-h-0 flex-1 overflow-y-auto scroll-inner">
       <AnimatePresence mode="wait">
         {step === 'count' ? (
           <CountStep
@@ -694,8 +694,8 @@ function DebrisConfigStep({
         ))}
       </div>
 
-      {/* Scrollable content */}
-      <div className="flex-1 overflow-y-auto pr-1 min-h-0 scroll-inner">
+      {/* Content */}
+      <div className="flex-1 min-h-0">
         <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-5 mb-4">
           <h3 className="text-lg font-bold text-white mb-3">
             Цель #{activeIndex + 1}
@@ -704,7 +704,7 @@ function DebrisConfigStep({
           {/* Debris selection grid */}
           <div className="mb-4">
             <label className="block text-xs text-gray-500 font-semibold mb-1.5 tracking-wider">ОБЪЕКТ МУСОРА</label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-60 overflow-y-auto pr-1 scroll-inner">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
               {DEBRIS_DATABASE.map(debris => {
                 const dc = difficultyColors[debris.difficulty] || difficultyColors[3];
                 const isSelected = activeConfig.debrisId === debris.id;

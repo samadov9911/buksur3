@@ -986,49 +986,59 @@ function ThermalGrid({ width, depth, height, y }: {
 /** Solar panel assembly — two rectangular panels on silver booms at 45° */
 function SolarPanelAssembly({ side }: { side: 'left' | 'right' }) {
   const xSign = side === 'left' ? -1 : 1;
-  const angle = side === 'left' ? Math.PI / 4 : -Math.PI / 4; // 45 degrees
+  const angle = side === 'left' ? Math.PI / 4 : -Math.PI / 4; // 45 degrees spread
 
   return (
     <group position={[xSign * BODY_W / 2, MID_Y, 0]} rotation={[0, 0, angle]}>
-      {/* Silver boom */}
-      <mesh position={[xSign * 0.007, 0, 0]} rotation={[0, 0, side === 'left' ? Math.PI / 2 : -Math.PI / 2]}>
-        <cylinderGeometry args={[0.0004, 0.0004, 0.014, 6]} />
+      {/* Silver boom — extended length for fully deployed panels */}
+      <mesh position={[xSign * 0.012, 0, 0]} rotation={[0, 0, side === 'left' ? Math.PI / 2 : -Math.PI / 2]}>
+        <cylinderGeometry args={[0.0004, 0.0004, 0.026, 6]} />
         <meshPhongMaterial color="#b0b0b0" specular="#dddddd" shininess={70} />
       </mesh>
 
-      {/* Solar panel at boom end */}
-      <group position={[xSign * 0.018, 0, 0]}>
+      {/* Solar panel at boom end — fully deployed, larger area */}
+      <group position={[xSign * 0.032, 0, 0]}>
         {/* Panel substrate (dark blue/black) */}
         <mesh>
-          <boxGeometry args={[0.038, 0.0006, 0.018]} />
+          <boxGeometry args={[0.06, 0.0006, 0.028]} />
           <meshPhongMaterial color="#0a0a1e" specular="#1a1a3e" shininess={40} />
         </mesh>
 
         {/* Solar cell grid — horizontal lines */}
-        {Array.from({ length: 7 }).map((_, i) => (
-          <mesh key={`ch-${i}`} position={[0, 0.00035, -0.008 + i * 0.0027]}>
-            <boxGeometry args={[0.036, 0.0002, 0.002]} />
+        {Array.from({ length: 9 }).map((_, i) => (
+          <mesh key={`ch-${i}`} position={[0, 0.00035, -0.012 + i * 0.003]}>
+            <boxGeometry args={[0.056, 0.0002, 0.0018]} />
             <meshPhongMaterial color="#1a237e" specular="#333366" shininess={80} />
           </mesh>
         ))}
         {/* Solar cell grid — vertical lines */}
-        {Array.from({ length: 12 }).map((_, i) => (
-          <mesh key={`cv-${i}`} position={[-0.017 + i * 0.0031, 0.00035, 0]}>
-            <boxGeometry args={[0.002, 0.0002, 0.016]} />
+        {Array.from({ length: 16 }).map((_, i) => (
+          <mesh key={`cv-${i}`} position={[-0.027 + i * 0.0036, 0.00035, 0]}>
+            <boxGeometry args={[0.0015, 0.0002, 0.026]} />
             <meshPhongMaterial color="#1a237e" specular="#333366" shininess={80} />
           </mesh>
         ))}
 
         {/* Silver frame around panel */}
         <mesh position={[0, 0.0005, 0]}>
-          <boxGeometry args={[0.039, 0.0003, 0.019]} />
+          <boxGeometry args={[0.061, 0.0003, 0.029]} />
           <meshPhongMaterial color="#888888" specular="#bbbbbb" shininess={50} />
         </mesh>
 
-        {/* Cross brace */}
+        {/* Cross braces on back */}
         <mesh position={[0, -0.0004, 0]} rotation={[0, 0, 0]}>
-          <boxGeometry args={[0.038, 0.0002, 0.001]} />
+          <boxGeometry args={[0.06, 0.0002, 0.001]} />
           <meshPhongMaterial color="#666666" specular="#888888" shininess={40} />
+        </mesh>
+        <mesh position={[0, -0.0004, 0]} rotation={[0, 0, Math.PI / 2]}>
+          <boxGeometry args={[0.028, 0.0002, 0.001]} />
+          <meshPhongMaterial color="#666666" specular="#888888" shininess={40} />
+        </mesh>
+
+        {/* Hinge mechanism at boom attachment point */}
+        <mesh position={[xSign * -0.028, 0, 0]}>
+          <boxGeometry args={[0.004, 0.002, 0.004]} />
+          <meshPhongMaterial color="#999999" specular="#cccccc" shininess={60} />
         </mesh>
       </group>
     </group>

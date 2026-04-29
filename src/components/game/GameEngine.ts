@@ -250,7 +250,7 @@ export function useGameEngine() {
 
     const tugSpec = mission.mode === 'nanosat' ? DEPLOYER_TUG : JANITOR_TUG;
 
-    // Initial orbit: 10 km BELOW target orbit for natural approach
+    // Target orbit altitude (km)
     let targetAlt: number;
     if (mission.mode === 'nanosat') {
       const nm = mission as any;
@@ -260,13 +260,19 @@ export function useGameEngine() {
       targetAlt = getDebrisById((mission as any).targetDebrisId)?.orbit.altitude || 400;
     }
 
+    // Starting orbit for the tug — use startOrbit from mission data (nanosat)
+    // or place near debris (janitor). The player must maneuver to the target.
+    let tugAlt: number;
+    if (mission.mode === 'nanosat') {
+      const nm = mission as any;
+      tugAlt = nm.startOrbit?.altitude || 250; // e.g. 200km for GTO mission
+    } else {
+      tugAlt = targetAlt - 100; // janitor: start 100km below debris orbit
+    }
+
     const targetInc = mission.mode === 'nanosat'
       ? (mission as any).startOrbit?.inclination || 51.6
       : (getDebrisById((mission as any).targetDebrisId)?.orbit.inclination || 51.6);
-
-    // Tug starts 100km below target — must maneuver to reach target orbit
-    // (100km is well outside the 15km deploy tolerance)
-    const tugAlt = targetAlt - 100;
     const tugR0 = R_EARTH + tugAlt * 1000;
     const targetR0 = R_EARTH + targetAlt * 1000;
     const tugV0 = circularOrbitalSpeed(tugR0);
@@ -291,16 +297,13 @@ export function useGameEngine() {
       vx: 0, vy: tugV0 * Math.cos(incRad), vz: tugV0 * Math.sin(incRad),
     }));
 
-    // Set initial canDeploy for nanosat missions (100km below target, outside tolerance)
+    // Set initial canDeploy for nanosat missions
+    // Tug starts at startOrbit altitude (e.g. 200km for GTO), far from target — must maneuver
     if (mission.mode === 'nanosat') {
       const nm = mission as any;
       const targetOrbit = ORBIT_TYPES[nm.targetOrbitId];
       if (targetOrbit) {
-        const altDiff = Math.abs(tugAlt - targetOrbit.altitude / 1000);
-        const incDiff = Math.abs(targetInc - targetOrbit.inclination);
-        const altTol = nm.tolerance?.altitude || 15;
-        const incTol = nm.tolerance?.inclination || 2;
-        // Start with canDeploy=false (100km > 15km tolerance) — player must maneuver
+        // Start with canDeploy=false — player must maneuver to target orbit
         gs.setCanDeploy(false);
       }
     }
