@@ -302,7 +302,7 @@ export default function MissionSelect() {
                     )}
                   </p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3 max-h-[45vh] overflow-y-auto overscroll-contain scroll-inner">
                     {captureTypes.map((ct) => {
                       const isSelected = playerCaptureType === ct.type;
                       const isRecommended = ct.type === recommendedCapture;
