@@ -186,12 +186,21 @@ export function useKeyboardInput() {
       keysRef.current[e.code] = false;
       setInput(prev => ({ ...prev, [e.code]: false }));
     };
+    // Clear all keys when window loses focus (prevents stuck keys)
+    const handleBlur = () => {
+      Object.keys(keysRef.current).forEach(key => {
+        keysRef.current[key] = false;
+      });
+      setInput({});
+    };
 
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('blur', handleBlur);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('blur', handleBlur);
     };
   }, []);
 

@@ -532,6 +532,11 @@ export default function Game() {
   useEffect(() => {
     if (screen !== 'playing' || isPaused) {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      // Clear all keyboard input when pausing to prevent stuck thrust/orientation
+      Object.keys(keyboardKeysRef.current).forEach(key => {
+        keyboardKeysRef.current[key] = false;
+      });
+      useGameStore.getState().setThrust(false);
       return;
     }
 

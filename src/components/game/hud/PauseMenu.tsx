@@ -244,6 +244,24 @@ function SettingsPanel() {
 
         {/* Схема управления */}
         <div className="border-t border-gray-800 pt-4">
+          <h3 className="text-xs text-gray-500 font-semibold mb-3 tracking-wider">УПРАВЛЕНИЕ КЛАВИАТУРОЙ</h3>
+          <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
+            <ControlRow keys="W / S" action="Тангаж (вверх/вниз)" />
+            <ControlRow keys="A / D" action="Крен (влево/вправо)" />
+            <ControlRow keys="← / →" action="Рыскание (влево/вправо)" />
+            <ControlRow keys="↑ / ↓" action="Тяга (вперёд/назад)" />
+            <ControlRow keys="Q / E" action="Боковая тяга" />
+            <ControlRow keys="Space" action="Захват / Стыковка" />
+            <ControlRow keys="V / 1-4" action="Камера" />
+            <ControlRow keys="Tab" action="Сменить захват" />
+            <ControlRow keys="+ / −" action="Высота (H±)" />
+            <ControlRow keys="Shift +/−" action="Наклонение (i±)" />
+            <ControlRow keys="[ / ]" action="Ускорение времени" />
+            <ControlRow keys="ESC" action="Пауза" />
+          </div>
+        </div>
+
+        <div className="border-t border-gray-800 pt-4">
           <h3 className="text-xs text-gray-500 font-semibold mb-3 tracking-wider">УПРАВЛЕНИЕ МЫШЬЮ</h3>
           <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
             <ControlRow keys="Колёсико" action="Зум камеры" />
