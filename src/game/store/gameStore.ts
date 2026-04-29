@@ -665,15 +665,18 @@ export const useGameStore = create<GameStore>((set, get) => ({
   endGame: () =>
     set((state) => {
       // Save score to leaderboard API (fire-and-forget)
-      if (state.playerName && state.gameResults.score > 0) {
+      const playerName = state.playerName || 'Пилот';
+      const gameMode = state.gameMode === 'janitor' ? 'Уборка' : state.gameMode === 'nanosat' ? 'Развёртывание' : '';
+      if (state.gameResults.score > 0) {
         fetch('/api/leaderboard', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: state.playerName,
+            name: playerName,
             score: state.gameResults.score,
-            mission: state.currentMission?.name || 'Неизвестная миссия',
+            mission: state.currentMission?.name || (state.missionTargets.length > 0 ? 'Кастомная миссия' : 'Неизвестная миссия'),
             rating: state.gameResults.rating,
+            mode: gameMode,
           }),
         }).catch(() => {});
       }

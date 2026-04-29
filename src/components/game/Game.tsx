@@ -236,19 +236,23 @@ export default function Game() {
               if (remaining > 0) {
                 gs.setDeploymentState('approaching');
               } else {
+                // All satellites deployed — calculate final score
                 const mission = getMissionById(gs.currentMissionId || '');
-                if (mission) {
-                  const maxDv = gs.maxDeltaV || 1;
-                  const score = Math.floor(10000 * mission.scoreMultiplier * (1 - gs.usedDeltaV / maxDv));
-                  const fuelEff = gs.initialFuelMass > 0 ? (gs.fuelMass / gs.initialFuelMass * 100) : 0;
-                  let rating: 'S' | 'A' | 'B' | 'C' | 'D' | 'F' = 'B';
-                  if (score > 9000) rating = 'S';
-                  else if (score > 7000) rating = 'A';
-                  else if (score > 5000) rating = 'B';
-                  else if (score > 3000) rating = 'C';
-                  gs.setResults({ score, debrisCleanedKg: 0, accuracy: 100, fuelEfficiency: fuelEff, timeBonus: 0, rating });
-                  gs.endGame();
-                }
+                const scoreMultiplier = mission?.scoreMultiplier || (1 + gs.missionTargets.length * 0.3);
+                const fuelEff = gs.initialFuelMass > 0 ? (gs.fuelMass / gs.initialFuelMass) : 0;
+                const timeBonus = Math.max(0, gs.timeRemaining || 0) * 10;
+                const totalSats = gs.selectedSatCount || gs.missionTargets.length || 1;
+                const completionFactor = Math.min(1, gs.deployedSats / totalSats);
+                const baseScore = 10000 * scoreMultiplier;
+                const score = Math.floor(baseScore * (0.5 + 0.5 * fuelEff) * completionFactor + timeBonus);
+                let rating: 'S' | 'A' | 'B' | 'C' | 'D' | 'F' = 'B';
+                if (score > 9000) rating = 'S';
+                else if (score > 7000) rating = 'A';
+                else if (score > 5000) rating = 'B';
+                else if (score > 3000) rating = 'C';
+                else if (score > 1000) rating = 'D';
+                gs.setResults({ score, debrisCleanedKg: 0, accuracy: 100, fuelEfficiency: fuelEff * 100, timeBonus, rating });
+                gs.endGame();
               }
             }
           }
@@ -375,20 +379,23 @@ export default function Game() {
               if (remaining > 0) {
                 gs.setDeploymentState('approaching');
               } else {
-                // All satellites deployed — end mission
+                // All satellites deployed — calculate final score
                 const mission = getMissionById(gs.currentMissionId || '');
-                if (mission) {
-                  const maxDv = gs.maxDeltaV || 1;
-                  const score = Math.floor(10000 * mission.scoreMultiplier * (1 - gs.usedDeltaV / maxDv));
-                  const fuelEff = gs.initialFuelMass > 0 ? (gs.fuelMass / gs.initialFuelMass * 100) : 0;
-                  let rating: 'S' | 'A' | 'B' | 'C' | 'D' | 'F' = 'B';
-                  if (score > 9000) rating = 'S';
-                  else if (score > 7000) rating = 'A';
-                  else if (score > 5000) rating = 'B';
-                  else if (score > 3000) rating = 'C';
-                  gs.setResults({ score, debrisCleanedKg: 0, accuracy: 100, fuelEfficiency: fuelEff, timeBonus: 0, rating });
-                  gs.endGame();
-                }
+                const scoreMultiplier = mission?.scoreMultiplier || (1 + gs.missionTargets.length * 0.3);
+                const fuelEff = gs.initialFuelMass > 0 ? (gs.fuelMass / gs.initialFuelMass) : 0;
+                const timeBonus = Math.max(0, gs.timeRemaining || 0) * 10;
+                const totalSats = gs.selectedSatCount || gs.missionTargets.length || 1;
+                const completionFactor = Math.min(1, gs.deployedSats / totalSats);
+                const baseScore = 10000 * scoreMultiplier;
+                const score = Math.floor(baseScore * (0.5 + 0.5 * fuelEff) * completionFactor + timeBonus);
+                let rating: 'S' | 'A' | 'B' | 'C' | 'D' | 'F' = 'B';
+                if (score > 9000) rating = 'S';
+                else if (score > 7000) rating = 'A';
+                else if (score > 5000) rating = 'B';
+                else if (score > 3000) rating = 'C';
+                else if (score > 1000) rating = 'D';
+                gs.setResults({ score, debrisCleanedKg: 0, accuracy: 100, fuelEfficiency: fuelEff * 100, timeBonus, rating });
+                gs.endGame();
               }
             }
           }
