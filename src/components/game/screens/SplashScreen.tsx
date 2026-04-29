@@ -74,15 +74,15 @@ export default function SplashScreen() {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1 }}
-        className="mb-4 md:mb-8"
+        className="mb-3 md:mb-8"
       >
         <div className="relative">
           <div className="absolute inset-0 blur-3xl bg-cyan-500/20 rounded-full scale-150" />
-          <h1 className="relative text-5xl sm:text-6xl md:text-8xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500">
+          <h1 className="relative text-4xl sm:text-6xl md:text-8xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-500">
             ORBITAL
           </h1>
         </div>
-        <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-[0.3em] text-orange-400 mt-2 text-center">
+        <h2 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-[0.3em] text-orange-400 mt-1 md:mt-2 text-center">
           TUG
         </h2>
       </motion.div>
@@ -92,7 +92,7 @@ export default function SplashScreen() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 0.5 }}
-        className="text-base sm:text-xl md:text-2xl text-gray-300 mb-4 md:mb-6 text-center"
+        className="text-sm sm:text-xl md:text-2xl text-gray-300 mb-3 md:mb-6 text-center"
       >
         Симулятор космического буксира
       </motion.p>
@@ -102,7 +102,7 @@ export default function SplashScreen() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.5 }}
-        className="w-full max-w-xs mb-4 md:mb-6"
+        className="w-full max-w-xs mb-3 md:mb-6"
       >
         <label className="block text-xs text-gray-500 mb-1.5 text-center tracking-wider font-semibold">
           ВАШ НИКНЕЙМ

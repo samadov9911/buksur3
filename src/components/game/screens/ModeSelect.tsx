@@ -34,10 +34,10 @@ export default function ModeSelect() {
 
   return (
     <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/60 overflow-hidden">
-      <div className="flex flex-col items-center w-full px-4 py-6 md:px-8 md:py-8 min-h-0 flex-1 overflow-y-auto scroll-inner" style={{ paddingBottom: 'max(1rem, calc(1rem + env(safe-area-inset-bottom, 0px)))' }}>
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 md:mb-8">Выберите режим</h2>
+      <div className="flex flex-col items-center w-full px-4 pt-4 pb-2 md:px-8 md:py-8 min-h-0 flex-1 overflow-y-auto scroll-inner" style={{ paddingBottom: 'max(1rem, calc(1rem + env(safe-area-inset-bottom, 0px)))' }}>
+      <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-3 md:mb-8">Выберите режим</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-5xl w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 max-w-5xl w-full">
         {modes.map((mode) => (
           <motion.div
             key={mode.id}
@@ -47,7 +47,7 @@ export default function ModeSelect() {
               useGameStore.getState().setGameMode(mode.id);
               useGameStore.getState().setScreen('missionSelect');
             }}
-            className={`relative cursor-pointer rounded-2xl border ${mode.borderColor} bg-gradient-to-br ${mode.color} p-4 md:p-8 shadow-xl ${mode.glowColor} overflow-hidden group`}
+            className={`relative cursor-pointer rounded-xl md:rounded-2xl border ${mode.borderColor} bg-gradient-to-br ${mode.color} p-4 md:p-8 shadow-xl ${mode.glowColor} overflow-hidden group active:scale-[0.98] transition-transform`}
           >
             {/* Фоновый паттерн */}
             <div className="absolute inset-0 opacity-10">
@@ -58,21 +58,21 @@ export default function ModeSelect() {
             </div>
 
             <div className="relative z-10">
-              <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-1 md:mb-2">{mode.title}</h3>
-              <p className="text-base md:text-lg text-white/80 mb-2 md:mb-4">{mode.subtitle}</p>
-              <p className="text-xs sm:text-sm text-white/70 mb-3 md:mb-6">{mode.description}</p>
+              <h3 className="text-lg sm:text-xl md:text-3xl font-bold text-white mb-0.5 md:mb-2">{mode.title}</h3>
+              <p className="text-sm md:text-lg text-white/80 mb-1 md:mb-4">{mode.subtitle}</p>
+              <p className="text-[11px] sm:text-sm text-white/70 mb-2 md:mb-6 line-clamp-2 md:line-clamp-none">{mode.description}</p>
 
-              <ul className="space-y-2">
+              <ul className="space-y-1 md:space-y-2">
                 {mode.features.map((feat) => (
-                  <li key={feat} className="flex items-center gap-2 text-white/90 text-sm">
-                    <span className="text-lg">✓</span> {feat}
+                  <li key={feat} className="flex items-center gap-2 text-white/90 text-xs md:text-sm">
+                    <span className="text-base md:text-lg">✓</span> {feat}
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Стрелка */}
-            <div className="absolute top-4 right-4 text-white/50 text-3xl group-hover:text-white/80 transition-colors">
+            <div className="absolute top-3 right-3 md:top-4 md:right-4 text-white/50 text-2xl md:text-3xl group-hover:text-white/80 transition-colors">
               →
             </div>
           </motion.div>
@@ -81,7 +81,7 @@ export default function ModeSelect() {
 
       <button
         onClick={() => useGameStore.getState().setScreen('splash')}
-        className="mt-6 md:mt-8 mb-4 text-gray-500 hover:text-gray-300 transition-colors text-sm"
+        className="mt-4 md:mt-8 mb-2 text-gray-500 hover:text-gray-300 active:text-gray-200 transition-colors text-sm py-2 touch-btn"
       >
         ← Назад
       </button>

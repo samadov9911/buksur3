@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -17,6 +17,14 @@ export const metadata: Metadata = {
   description: "Реалистичная развлекательная и познавательная игра о космических буксирах. Доставка наноспутников и уборка космического мусора.",
   keywords: ["orbital tug", "космический буксир", "space debris", "CubeSat", "space simulator"],
   authors: [{ name: "Махди Самадов" }],
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
