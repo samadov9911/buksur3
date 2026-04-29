@@ -178,7 +178,7 @@ export default function PreConfigScreen() {
   // ---- RENDER ----
   return (
     <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-hidden">
-      <div className="flex flex-col items-center w-full max-w-4xl px-4 py-6 md:px-8 md:py-8 safe-bottom min-h-0 flex-1 overflow-hidden">
+      <div className="flex flex-col items-center w-full max-w-4xl px-4 py-6 md:px-8 md:py-8 safe-bottom md:min-h-0 flex-1 overflow-y-auto scroll-inner md:overflow-hidden">
       <AnimatePresence mode="wait">
         {step === 'count' ? (
           <CountStep
@@ -318,21 +318,21 @@ function NanoSatConfigStep({
       initial={{ opacity: 0, x: 30 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -30 }}
-      className="w-full max-w-4xl flex flex-col flex-1 min-h-0"
+      className="w-full max-w-4xl flex flex-col md:flex-1 md:min-h-0"
     >
-      <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm mb-3 flex items-center gap-1 shrink-0">
+      <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm mb-3 flex items-center gap-1 md:shrink-0">
         ← Изменить количество
       </button>
 
-      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1 shrink-0">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1 md:shrink-0">
         🛰 Конфигурация наноспутников
       </h2>
-      <p className="text-gray-400 text-sm mb-4 shrink-0">
+      <p className="text-gray-400 text-sm mb-4 md:shrink-0">
         Настройте тип орбиты и все элементы орбиты для каждого наноспутника
       </p>
 
       {/* Target selector tabs */}
-      <div className="flex gap-1.5 mb-4 flex-wrap shrink-0">
+      <div className="flex gap-1.5 mb-4 flex-wrap md:shrink-0">
         {configs.map((_, i) => (
           <button
             key={i}
@@ -349,7 +349,7 @@ function NanoSatConfigStep({
       </div>
 
       {/* Scrollable content area */}
-      <div className="flex-1 overflow-y-auto pr-1 min-h-0 scroll-inner" style={{ paddingBottom: 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))' }}>
+      <div className="pr-1 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner">
         <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-5 mb-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-bold text-white">
@@ -559,7 +559,7 @@ function NanoSatConfigStep({
       </div>
 
       {/* Summary (always visible) */}
-      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 max-h-36 overflow-y-auto shrink-0 scroll-inner">
+      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 md:max-h-36 md:overflow-y-auto md:shrink-0 scroll-inner">
         <h4 className="text-xs text-gray-500 font-semibold mb-2 tracking-wider">
           ИТОГО: {configs.length} наноспутник{configs.length > 1 ? 'ов' : ''}
         </h4>
@@ -602,13 +602,13 @@ function NanoSatConfigStep({
 
       {/* Validation warning */}
       {!allValid && (
-        <div className="text-red-400 text-xs mb-3 shrink-0">
+        <div className="text-red-400 text-xs mb-3 md:shrink-0">
           ⚠ Проверьте параметры: перигей ≥ 150 км, апогей ≥ 200 км, перигей ≤ апогей, наклонение 0–180°
         </div>
       )}
 
       {/* Start button */}
-      <div className="flex justify-center gap-4 shrink-0 pt-2">
+      <div className="flex justify-center gap-4 md:shrink-0 pt-2 pb-4">
         <button
           onClick={onStart}
           disabled={!allValid}
@@ -664,21 +664,21 @@ function DebrisConfigStep({
       initial={{ opacity: 0, x: 30 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -30 }}
-      className="w-full max-w-3xl flex flex-col flex-1 min-h-0"
+      className="w-full max-w-3xl flex flex-col md:flex-1 md:min-h-0"
     >
-      <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm mb-3 flex items-center gap-1 shrink-0">
+      <button onClick={onBack} className="text-gray-400 hover:text-white transition-colors text-sm mb-3 flex items-center gap-1 md:shrink-0">
         ← Изменить количество
       </button>
 
-      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1 shrink-0">
+      <h2 className="text-2xl md:text-3xl font-bold text-white mb-1 md:shrink-0">
         🗑 Выбор объектов для утилизации
       </h2>
-      <p className="text-gray-400 text-sm mb-4 shrink-0">
+      <p className="text-gray-400 text-sm mb-4 md:shrink-0">
         Выберите космический мусор и тип захватного устройства для каждого объекта. Общая масса: <span className="text-orange-400 font-bold">{totalMass.toFixed(0)} кг</span>
       </p>
 
       {/* Target selector tabs */}
-      <div className="flex gap-1.5 mb-4 flex-wrap shrink-0">
+      <div className="flex gap-1.5 mb-4 flex-wrap md:shrink-0">
         {configs.map((_, i) => (
           <button
             key={i}
@@ -695,7 +695,7 @@ function DebrisConfigStep({
       </div>
 
       {/* Scrollable content — single scroll context, no nesting conflicts */}
-      <div className="flex-1 overflow-y-auto min-h-0 scroll-inner pr-1" style={{ paddingBottom: 'max(0.5rem, calc(0.5rem + env(safe-area-inset-bottom, 0px)))' }}>
+      <div className="scroll-inner pr-1 md:flex-1 md:overflow-y-auto md:min-h-0">
         <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-5 mb-4">
           <h3 className="text-lg font-bold text-white mb-3">
             Цель #{activeIndex + 1}
@@ -780,7 +780,7 @@ function DebrisConfigStep({
       </div>
 
       {/* Summary */}
-      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 shrink-0">
+      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 md:shrink-0">
         <h4 className="text-xs text-gray-500 font-semibold mb-2 tracking-wider">ИТОГО: {configs.length} объектов ({totalMass.toFixed(0)} кг)</h4>
         <div className="space-y-1">
           {configs.map((cfg, i) => {
@@ -802,7 +802,7 @@ function DebrisConfigStep({
       </div>
 
       {/* Start button */}
-      <div className="flex justify-center gap-4 shrink-0 pt-2">
+      <div className="flex justify-center gap-4 md:shrink-0 pt-2 pb-4">
         <button
           onClick={onStart}
           className="px-8 py-3 rounded-xl bg-orange-500 hover:bg-orange-400 text-black font-bold text-lg transition-all hover:scale-105 shadow-lg hover:shadow-orange-500/30 touch-btn"

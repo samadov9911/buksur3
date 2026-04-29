@@ -102,7 +102,7 @@ export default function MissionSelect() {
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/70 overflow-hidden">
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/70 overflow-y-auto scroll-inner md:overflow-hidden safe-bottom" style={{ paddingBottom: 'max(1rem, calc(1rem + env(safe-area-inset-bottom, 0px)))' }}>
       <AnimatePresence mode="wait">
         {!selectedMission ? (
           /* ===== СПИСОК МИССИЙ ===== */
@@ -111,10 +111,10 @@ export default function MissionSelect() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, x: -30 }}
-            className="w-full max-w-3xl flex-1 flex flex-col min-h-0"
+            className="w-full max-w-3xl flex flex-col md:flex-1 md:min-h-0"
           >
             {/* Fixed header — compact on mobile */}
-            <div className="shrink-0 w-full max-w-3xl px-4 pt-4 pb-2 md:pt-6 md:pb-4 md:px-0">
+            <div className="md:shrink-0 w-full max-w-3xl px-4 pt-4 pb-2 md:pt-6 md:pb-4 md:px-0">
               <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-1 md:mb-2">
                 {gameMode === 'nanosat' ? '🛰 Миссии по развёртыванию' : '🗑 Миссии по уборке'}
               </h2>
@@ -122,7 +122,7 @@ export default function MissionSelect() {
             </div>
 
             {/* Scrollable content — compact cards on mobile */}
-            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner md:pb-4" style={{ paddingBottom: 'max(4.5rem, calc(4.5rem + env(safe-area-inset-bottom, 0px)))' }}>
+            <div className="px-4 md:px-0 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner md:pb-4">
 
             {/* Custom mission button — compact on mobile */}
             <motion.div
@@ -206,7 +206,7 @@ export default function MissionSelect() {
             </div>
 
             {/* Fixed footer — always visible on mobile */}
-            <div className="shrink-0 px-4 md:px-0 pt-1 pb-1 md:pt-2 safe-bottom-spacer">
+            <div className="md:shrink-0 px-4 md:px-0 pt-1 pb-1 md:pt-2 md:safe-bottom-spacer">
               <button
                 onClick={() => useGameStore.getState().setScreen('modeSelect')}
                 className="w-full text-gray-500 hover:text-gray-300 active:text-gray-200 transition-colors text-sm py-2.5 touch-btn"
@@ -222,9 +222,9 @@ export default function MissionSelect() {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 30 }}
-            className="w-full max-w-3xl flex-1 flex flex-col min-h-0"
+            className="w-full max-w-3xl flex flex-col md:flex-1 md:min-h-0"
           >
-            <div className="shrink-0 px-4 pt-3 md:pt-4 md:px-0">
+            <div className="md:shrink-0 px-4 pt-3 md:pt-4 md:px-0">
               <button
                 onClick={handleBack}
                 className="text-gray-400 hover:text-white active:text-gray-200 transition-colors text-sm flex items-center gap-1 touch-btn"
@@ -234,7 +234,7 @@ export default function MissionSelect() {
             </div>
 
             {/* Scrollable content area — mission info + capture type + start button */}
-            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner" style={{ paddingBottom: 'max(1.5rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)))' }}>
+            <div className="px-4 md:px-0 md:flex-1 md:overflow-y-auto md:min-h-0 scroll-inner">
               {/* Mission info card — compact on mobile */}
               <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-3 md:p-6 mb-3 md:mb-4">
                 <div className="flex items-center gap-2 mb-2 md:mb-3">

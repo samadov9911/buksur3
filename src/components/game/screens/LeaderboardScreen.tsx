@@ -71,9 +71,9 @@ export default function LeaderboardScreen() {
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-hidden">
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-y-auto scroll-inner md:overflow-hidden safe-bottom" style={{ paddingBottom: 'max(1rem, calc(1rem + env(safe-area-inset-bottom, 0px)))' }}>
         {/* Fixed header */}
-        <div className="shrink-0 w-full max-w-2xl mx-auto px-4 pt-4">
+        <div className="md:shrink-0 w-full max-w-2xl mx-auto px-4 pt-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-2 text-center">🏆 Таблица лидеров</h2>
           {playerName ? (
             <p className="text-gray-500 text-center mb-3 md:mb-4 text-sm">Игрок: <span className="text-cyan-400 font-medium">{playerName}</span></p>
@@ -83,7 +83,7 @@ export default function LeaderboardScreen() {
         </div>
 
         {/* Scrollable content area */}
-        <div className="flex-1 overflow-y-auto w-full max-w-2xl mx-auto min-h-0 scroll-inner px-4 md:px-0">
+        <div className="w-full max-w-2xl mx-auto scroll-inner px-4 md:px-0 md:flex-1 md:overflow-y-auto md:min-h-0">
           {loading ? (
             <div className="flex items-center justify-center py-16">
               <div className="w-6 h-6 border-2 border-cyan-500/30 border-t-cyan-400 rounded-full animate-spin" />
@@ -135,7 +135,7 @@ export default function LeaderboardScreen() {
         </div>
 
         {/* Fixed footer buttons — always visible at bottom */}
-        <div className="shrink-0 flex items-center justify-center gap-3 sm:gap-4 mt-3 md:mt-6 pb-1 safe-bottom px-4">
+        <div className="md:shrink-0 flex items-center justify-center gap-3 sm:gap-4 mt-3 md:mt-6 pb-1 md:safe-bottom px-4">
           <button
             onClick={() => useGameStore.getState().setScreen('results')}
             className="px-5 sm:px-6 py-2.5 border border-gray-600 text-gray-400 rounded-lg hover:border-gray-400 hover:text-white transition-colors text-sm touch-btn"
