@@ -559,7 +559,7 @@ function NanoSatConfigStep({
       </div>
 
       {/* Summary (always visible) */}
-      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 max-h-[30vh] overflow-y-auto scroll-inner md:max-h-none md:overflow-visible">
+      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 max-h-16 overflow-y-auto overscroll-contain scroll-inner summary-scroll md:max-h-none md:overflow-visible">
         <h4 className="text-xs text-gray-500 font-semibold mb-2 tracking-wider">
           ИТОГО: {configs.length} наноспутник{configs.length > 1 ? 'ов' : ''}
         </h4>
@@ -780,7 +780,7 @@ function DebrisConfigStep({
       </div>
 
       {/* Summary */}
-      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 max-h-[30vh] overflow-y-auto scroll-inner md:max-h-none md:overflow-visible">
+      <div className="rounded-xl border border-gray-600/20 bg-gray-900/30 p-3 mb-4 max-h-16 overflow-y-auto overscroll-contain scroll-inner summary-scroll md:max-h-none md:overflow-visible">
         <h4 className="text-xs text-gray-500 font-semibold mb-2 tracking-wider">ИТОГО: {configs.length} объектов ({totalMass.toFixed(0)} кг)</h4>
         <div className="space-y-1">
           {configs.map((cfg, i) => {
