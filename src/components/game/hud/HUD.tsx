@@ -5,7 +5,7 @@
  */
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useGameStore } from '@/game/store/gameStore';
 import { getMissionById } from '@/game/data/missions';
