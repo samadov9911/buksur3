@@ -836,7 +836,10 @@ function CameraController({ followTarget, view, tugRotation }: {
       // Position: just in front of body top, slightly elevated
       const eyeForward = 0.013 * TUG_SCALE;  // slightly ahead of body front edge
       const eyeUp = 0.012 * TUG_SCALE;       // at container top level
-      const eyeOffset = _tmpV.current.copy(_fwd.current).multiplyScalar(eyeForward)
+      // Use a fresh vector for eyeOffset to avoid aliasing bug
+      // (previously _tmpV.current was reused, causing eyeOffset === followTarget)
+      const eyeOffset = new THREE.Vector3()
+        .copy(_fwd.current).multiplyScalar(eyeForward)
         .add(up.clone().multiplyScalar(eyeUp));
       const desiredCockpitPos = _tmpV.current.copy(followTarget).add(eyeOffset);
 

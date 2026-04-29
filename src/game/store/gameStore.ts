@@ -342,7 +342,7 @@ const initialState: GameState = {
   remainingDeltaV: 0,
   missionTime: 0,
   timeRemaining: 0,
-  cameraView: 'tug' as CameraView,
+  cameraView: 'cockpit' as CameraView,
   showFormulas: false,
   showKnowledgePanel: false,
 
@@ -643,7 +643,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
         isGameOver: false,
         missionTime: 0,
         timeRemaining: effectiveTimeLimit,
-        cameraView: 'tug' as CameraView,
+        cameraView: 'cockpit' as CameraView,
         // Reset ALL mission-specific state to prevent stale data from previous games
         deployedSats: 0,
         capturedDebris: [],
