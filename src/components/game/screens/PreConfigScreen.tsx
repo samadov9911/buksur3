@@ -177,7 +177,7 @@ export default function PreConfigScreen() {
 
   // ---- RENDER ----
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80">
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-hidden">
       <div className="flex flex-col items-center w-full max-w-4xl px-4 py-6 md:px-8 md:py-8 safe-bottom min-h-0 flex-1 overflow-y-auto scroll-inner">
       <AnimatePresence mode="wait">
         {step === 'count' ? (

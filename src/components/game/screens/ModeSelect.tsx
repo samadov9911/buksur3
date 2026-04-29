@@ -33,8 +33,8 @@ export default function ModeSelect() {
   ];
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/60">
-      <div className="flex flex-col items-center w-full px-4 py-6 md:px-8 md:py-8 min-h-0 flex-1 overflow-y-auto scroll-inner safe-bottom">
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/60 overflow-hidden">
+      <div className="flex flex-col items-center w-full px-4 py-6 md:px-8 md:py-8 min-h-0 flex-1 overflow-y-auto scroll-inner" style={{ paddingBottom: 'max(1rem, calc(1rem + env(safe-area-inset-bottom, 0px)))' }}>
       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 md:mb-8">Выберите режим</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-5xl w-full">

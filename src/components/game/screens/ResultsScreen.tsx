@@ -26,7 +26,7 @@ export default function ResultsScreen() {
   const score = Math.floor(result.score);
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80">
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/80 overflow-hidden">
       <div className="flex-1 min-h-0 flex flex-col items-center justify-center p-4 safe-bottom overflow-y-auto scroll-inner">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}

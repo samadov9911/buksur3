@@ -67,7 +67,7 @@ export default function SplashScreen() {
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-gradient-to-b from-black/80 via-black/50 to-black/80">
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-gradient-to-b from-black/80 via-black/50 to-black/80 overflow-hidden">
       <div className="flex flex-col items-center w-full px-4 py-6 min-h-0 flex-1 overflow-y-auto scroll-inner safe-bottom">
       {/* Логотип */}
       <motion.div

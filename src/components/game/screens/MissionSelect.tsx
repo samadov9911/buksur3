@@ -102,7 +102,7 @@ export default function MissionSelect() {
   };
 
   return (
-    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/70">
+    <div className="absolute inset-0 flex flex-col items-center pointer-events-auto bg-black/70 overflow-hidden">
       <AnimatePresence mode="wait">
         {!selectedMission ? (
           /* ===== СПИСОК МИССИЙ ===== */
@@ -111,7 +111,7 @@ export default function MissionSelect() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, x: -30 }}
-            className="w-full max-w-3xl flex-1 flex flex-col min-h-0"
+            className="w-full max-w-3xl flex-1 flex flex-col min-h-0 h-full"
           >
             {/* Fixed header */}
             <div className="shrink-0 w-full max-w-3xl px-4 md:px-0">
@@ -122,7 +122,7 @@ export default function MissionSelect() {
             </div>
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner pb-4">
+            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner" style={{ paddingBottom: 'max(1rem, calc(1rem + env(safe-area-inset-bottom, 0px)))' }}>
 
             {/* Custom mission button */}
             <motion.div
@@ -208,7 +208,7 @@ export default function MissionSelect() {
             {/* Fixed footer */}
             <button
               onClick={() => useGameStore.getState().setScreen('modeSelect')}
-              className="mt-3 mb-2 text-gray-500 hover:text-gray-300 transition-colors text-sm shrink-0 py-2 px-4 touch-btn"
+              className="mt-2 text-gray-500 hover:text-gray-300 transition-colors text-sm shrink-0 py-3 px-4 touch-btn safe-bottom-spacer"
             >
               ← Выбрать другой режим
             </button>
@@ -220,7 +220,7 @@ export default function MissionSelect() {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 30 }}
-            className="w-full max-w-3xl flex-1 flex flex-col min-h-0"
+            className="w-full max-w-3xl flex-1 flex flex-col min-h-0 h-full"
           >
             <button
               onClick={handleBack}
@@ -230,7 +230,7 @@ export default function MissionSelect() {
             </button>
 
             {/* Scrollable content area — mission info + capture type selection */}
-            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner pb-4">
+            <div className="flex-1 overflow-y-auto min-h-0 px-4 md:px-0 scroll-inner safe-bottom" style={{ paddingBottom: 'max(1rem, calc(1rem + env(safe-area-inset-bottom, 0px)))' }}>
               <div className="rounded-xl border border-gray-600/30 bg-gray-900/50 p-4 md:p-6 mb-4">
                 <div className="flex items-center gap-3 mb-3">
                   <h2 className="text-2xl md:text-3xl font-bold text-white">{selectedMission.name}</h2>
