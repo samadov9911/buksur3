@@ -1,8 +1,12 @@
 /**
- * MobileJoystick — virtual dual-stick controls for smartphones
- * Ultra-compact layout: joystick (bottom-left) + action buttons (bottom-right)
- * Camera/pause/buttons moved to HUD top bar — no duplicates here
- * All controls fit within ~10% screen height max
+ * MobileJoystick — virtual controls for smartphones
+ * Supports both portrait and landscape orientations
+ * Layout:
+ *   - Bottom-left: Orientation joystick (pitch/yaw)
+ *   - Bottom-left below joystick: Roll buttons (↶/↷)
+ *   - Bottom-right: Thrust + orbital adjustment buttons
+ *   - Bottom-center: Context action button (ЗАХВАТ/СТЫКОВКА/СНИЖЕНИЕ/ДАЛЕЕ)
+ * Camera/pause moved to HUD top bar — no duplicates here
  */
 'use client';
 
@@ -63,22 +67,19 @@ function VirtualJoystick({
 
   const colorClasses = {
     cyan: {
-      base: 'border-cyan-500/25 bg-cyan-950/20',
-      stick: 'bg-cyan-400/50 border-cyan-400/40',
-      label: 'text-cyan-500/50',
-      glow: '',
+      base: 'border-cyan-500/30 bg-cyan-950/25',
+      stick: 'bg-cyan-400/60 border-cyan-400/50',
+      label: 'text-cyan-500/60',
     },
     amber: {
-      base: 'border-amber-500/25 bg-amber-950/20',
-      stick: 'bg-amber-400/50 border-amber-400/40',
-      label: 'text-amber-500/50',
-      glow: '',
+      base: 'border-amber-500/30 bg-amber-950/25',
+      stick: 'bg-amber-400/60 border-amber-400/50',
+      label: 'text-amber-500/60',
     },
     emerald: {
-      base: 'border-emerald-500/25 bg-emerald-950/20',
-      stick: 'bg-emerald-400/50 border-emerald-400/40',
-      label: 'text-emerald-500/50',
-      glow: '',
+      base: 'border-emerald-500/30 bg-emerald-950/25',
+      stick: 'bg-emerald-400/60 border-emerald-400/50',
+      label: 'text-emerald-500/60',
     },
   };
 
@@ -207,7 +208,7 @@ function VirtualJoystick({
 
   return (
     <div className="flex flex-col items-center">
-      <span className={`text-[7px] font-semibold tracking-wider ${cc.label} mb-0.5`}>{label}</span>
+      <span className={`text-[8px] font-semibold tracking-wider ${cc.label} mb-1`}>{label}</span>
       <div
         ref={containerRef}
         className={`relative rounded-full border ${cc.base}`}
@@ -229,7 +230,7 @@ function VirtualJoystick({
             height: stickSize,
             left: `calc(50% - ${stickSize / 2}px + ${stickX}px)`,
             top: `calc(50% - ${stickSize / 2}px + ${stickY}px)`,
-            boxShadow: stickPos.active ? `0 0 8px rgba(${color === 'cyan' ? '0,200,255' : color === 'amber' ? '250,180,0' : '50,220,150'},0.3)` : 'none',
+            boxShadow: stickPos.active ? `0 0 12px rgba(${color === 'cyan' ? '0,200,255' : color === 'amber' ? '250,180,0' : '50,220,150'},0.4)` : 'none',
           }}
         />
       </div>
@@ -237,7 +238,7 @@ function VirtualJoystick({
   );
 }
 
-/** Ultra-compact action buttons for mobile — bottom right area */
+/** Action buttons for mobile — bottom right area */
 function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
   const [thrustActive, setThrustActive] = useState(false);
 
@@ -251,86 +252,114 @@ function ActionButtons({ isPortrait }: { isPortrait: boolean }) {
     useGameStore.getState().setThrust(false);
   }, []);
 
-  // Common sizes: all buttons at least 44px touch target
-  const gridBtnClass = `rounded flex items-center justify-center font-bold active:scale-90 transition-all ${
-    isPortrait ? 'w-11 h-9 text-[9px]' : 'w-10 h-8 text-[8px]'
-  }`;
+  // Portrait: compact buttons. Landscape: larger buttons
+  const btnH = isPortrait ? 'h-10' : 'h-11';
+  const btnW = isPortrait ? 'w-10' : 'w-12';
+  const textSize = isPortrait ? 'text-[9px]' : 'text-[10px]';
 
   return (
-    <div className="flex flex-col items-center gap-1">
-      {/* Row 1: H+/H- + i+/i- — 2x2 grid with proper touch targets */}
+    <div className="flex flex-col items-center gap-1.5">
+      {/* Row 1: H+/H- + i+/i- — 2x2 grid */}
       <div className="grid grid-cols-2 gap-1">
         <button
           onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestAltitudeChange(10); }}
-          className={`${gridBtnClass} bg-emerald-950/30 border border-emerald-500/25 text-emerald-400 active:bg-emerald-500/20`}
+          className={`${btnW} ${btnH} rounded-lg flex items-center justify-center font-bold active:scale-90 transition-all bg-emerald-950/30 border border-emerald-500/30 text-emerald-400 active:bg-emerald-500/20 ${textSize}`}
         >
           H+
         </button>
         <button
           onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestAltitudeChange(-10); }}
-          className={`${gridBtnClass} bg-red-950/30 border border-red-500/25 text-red-400 active:bg-red-500/20`}
+          className={`${btnW} ${btnH} rounded-lg flex items-center justify-center font-bold active:scale-90 transition-all bg-red-950/30 border border-red-500/30 text-red-400 active:bg-red-500/20 ${textSize}`}
         >
           H−
         </button>
         <button
           onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestInclinationChange(1); }}
-          className={`${gridBtnClass} bg-amber-950/30 border border-amber-500/25 text-amber-400 active:bg-amber-500/20`}
+          className={`${btnW} ${btnH} rounded-lg flex items-center justify-center font-bold active:scale-90 transition-all bg-amber-950/30 border border-amber-500/30 text-amber-400 active:bg-amber-500/20 ${textSize}`}
         >
           i+
         </button>
         <button
           onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().requestInclinationChange(-1); }}
-          className={`${gridBtnClass} bg-orange-950/30 border border-orange-500/25 text-orange-400 active:bg-orange-500/20`}
+          className={`${btnW} ${btnH} rounded-lg flex items-center justify-center font-bold active:scale-90 transition-all bg-orange-950/30 border border-orange-500/30 text-orange-400 active:bg-orange-500/20 ${textSize}`}
         >
           i−
         </button>
       </div>
 
-      {/* Row 2: Thrust buttons — larger touch targets */}
-      <div className="flex gap-1">
+      {/* Row 2: Thrust forward/reverse — prominent buttons */}
+      <div className="flex gap-1.5">
         <button
           onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setThrust(true); }}
           onTouchEnd={(e) => { e.preventDefault(); useGameStore.getState().setThrust(false); }}
           onTouchCancel={() => useGameStore.getState().setThrust(false)}
-          className={`${isPortrait ? 'w-12 h-9' : 'w-10 h-8'} rounded border flex items-center justify-center transition-all bg-red-950/25 border-red-500/20`}
+          className={`${isPortrait ? 'w-14' : 'w-16'} ${btnH} rounded-lg border flex items-center justify-center transition-all bg-red-950/30 border-red-500/30 active:bg-red-500/25`}
         >
-          <svg width={isPortrait ? 12 : 10} height={isPortrait ? 12 : 10} viewBox="0 0 16 16" fill="none">
-            <path d="M4 12 L8 4 L12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width={isPortrait ? 14 : 16} height={isPortrait ? 14 : 16} viewBox="0 0 16 16" fill="none">
+            <path d="M4 12 L8 4 L12 12" stroke="#f87171" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
         <button
           onTouchStart={handleThrustStart}
           onTouchEnd={handleThrustEnd}
           onTouchCancel={handleThrustEnd}
-          className={`${isPortrait ? 'w-12 h-9' : 'w-10 h-8'} rounded border flex items-center justify-center transition-all ${
+          className={`${isPortrait ? 'w-14' : 'w-16'} ${btnH} rounded-lg border flex items-center justify-center transition-all ${
             thrustActive
-              ? 'bg-cyan-500/25 border-cyan-400/50 animate-pulse'
-              : 'bg-cyan-950/25 border-cyan-500/20'
+              ? 'bg-cyan-500/30 border-cyan-400/60 shadow-lg shadow-cyan-500/20'
+              : 'bg-cyan-950/30 border-cyan-500/30'
           }`}
         >
-          <svg width={isPortrait ? 12 : 10} height={isPortrait ? 12 : 10} viewBox="0 0 16 16" fill="none">
-            <path d="M4 4 L8 12 L12 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <svg width={isPortrait ? 14 : 16} height={isPortrait ? 14 : 16} viewBox="0 0 16 16" fill="none">
+            <path d="M4 4 L8 12 L12 4" stroke={thrustActive ? '#22d3ee' : '#67e8f9'} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       </div>
 
-      {/* Row 3: Time warp — proper touch targets */}
+      {/* Row 3: Time warp — only in portrait (more screen space) */}
       {isPortrait && (
-      <div className="flex gap-1">
-        <button
-          onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().decreaseTimeWarp(); }}
-          className="w-11 h-9 rounded bg-gray-800/40 border border-white/8 flex items-center justify-center text-gray-400 text-[9px] font-bold active:scale-90 transition-all"
-        >
-          W−
-        </button>
-        <button
-          onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().increaseTimeWarp(); }}
-          className="w-11 h-9 rounded bg-gray-800/40 border border-white/8 flex items-center justify-center text-gray-400 text-[9px] font-bold active:scale-90 transition-all"
-        >
-          W+
-        </button>
-      </div>
+        <div className="flex gap-1">
+          <button
+            onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().decreaseTimeWarp(); }}
+            className="w-10 h-9 rounded-lg bg-gray-800/40 border border-white/10 flex items-center justify-center text-gray-400 text-[9px] font-bold active:scale-90 transition-all"
+          >
+            W−
+          </button>
+          <button
+            onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().increaseTimeWarp(); }}
+            className="w-10 h-9 rounded-lg bg-gray-800/40 border border-white/10 flex items-center justify-center text-gray-400 text-[9px] font-bold active:scale-90 transition-all"
+          >
+            W+
+          </button>
+        </div>
       )}
+    </div>
+  );
+}
+
+/** Roll buttons — below the orientation joystick */
+function RollButtons({ isPortrait }: { isPortrait: boolean }) {
+  const btnSize = isPortrait ? 'w-10 h-10' : 'w-12 h-12';
+  const textSize = isPortrait ? 'text-[10px]' : 'text-xs';
+
+  return (
+    <div className="flex items-center gap-1 mt-1">
+      <button
+        onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setMobileRoll(-1); }}
+        onTouchEnd={(e) => { e.preventDefault(); useGameStore.getState().setMobileRoll(0); }}
+        onTouchCancel={() => useGameStore.getState().setMobileRoll(0)}
+        className={`${btnSize} rounded-lg border flex items-center justify-center active:scale-90 transition-all bg-purple-950/25 border-purple-500/25 active:bg-purple-500/20 ${textSize} text-purple-300 font-bold`}
+      >
+        ↶
+      </button>
+      <span className="text-[7px] text-purple-500/50 font-semibold tracking-wider">КРЕН</span>
+      <button
+        onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setMobileRoll(1); }}
+        onTouchEnd={(e) => { e.preventDefault(); useGameStore.getState().setMobileRoll(0); }}
+        onTouchCancel={() => useGameStore.getState().setMobileRoll(0)}
+        className={`${btnSize} rounded-lg border flex items-center justify-center active:scale-90 transition-all bg-purple-950/25 border-purple-500/25 active:bg-purple-500/20 ${textSize} text-purple-300 font-bold`}
+      >
+        ↷
+      </button>
     </div>
   );
 }
@@ -356,42 +385,44 @@ export default function MobileJoystick({ onOrientation, onThrust, onRoll }: Mobi
     });
   }, []);
 
-  const handleThrustMove = useCallback((x: number, y: number) => {
-    thrustRef.current?.(x, y);
-  }, []);
-
   if (!isMobile) return null;
 
+  // Responsive sizes: larger in landscape for better control
+  const joystickBase = isPortrait ? 80 : 100;
+  const joystickStick = isPortrait ? 32 : 38;
+
   return (
-    <div className="absolute inset-0 pointer-events-none z-30">
-      {/* ═══════════════════════════════════════════
-           BOTTOM CONTROLS — all within bottom ~10% of screen
-           Joystick: bottom-left | Action: bottom-right
+    <div className="absolute inset-0 pointer-events-none z-30" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+      {/* ═══════════════════════════════════════════════════════
+           BOTTOM-LEFT: Orientation joystick + Roll buttons
+           BOTTOM-RIGHT: Thrust + orbital adjustment buttons
+           BOTTOM-CENTER: Context action button (ЗАХВАТ/СТЫКОВКА)
            ═══════════════════════════════════════════════════════ */}
 
-      {/* Left joystick: orientation — always bottom-left, compact */}
-      <div className="absolute bottom-4 left-2 pointer-events-auto">
+      {/* Left: Orientation joystick + Roll */}
+      <div className="absolute bottom-3 left-2 pointer-events-auto">
         <VirtualJoystick
-          baseSize={isPortrait ? 70 : 80}
-          stickSize={isPortrait ? 28 : 32}
-          label="ОРИЕНТ"
+          baseSize={joystickBase}
+          stickSize={joystickStick}
+          label="ОРИЕНТАЦИЯ"
           color="cyan"
           onMove={handleOrientationMove}
         />
+        <RollButtons isPortrait={isPortrait} />
       </div>
 
-      {/* Right side: action buttons — bottom-right, ultra-compact column */}
-      <div className="absolute bottom-4 right-2 pointer-events-auto">
+      {/* Right: Action buttons */}
+      <div className="absolute bottom-3 right-2 pointer-events-auto">
         <ActionButtons isPortrait={isPortrait} />
       </div>
 
-      {/* Central action button (SPACE equivalent) — between joystick and buttons */}
+      {/* Center: Context action button */}
       <MobileActionButton isPortrait={isPortrait} />
     </div>
   );
 }
 
-/** Central action button (equivalent to SPACE key) */
+/** Central action button (equivalent to SPACE key) — ЗАХВАТ / СТЫКОВКА / СНИЖЕНИЕ / ДАЛЕЕ */
 function MobileActionButton({ isPortrait }: { isPortrait: boolean }) {
   const gameMode = useGameStore(s => s.gameMode);
   const canCapture = useGameStore(s => s.canCapture);
@@ -401,13 +432,13 @@ function MobileActionButton({ isPortrait }: { isPortrait: boolean }) {
 
   const getAction = () => {
     if (gameMode === 'janitor') {
-      if (canCapture && captureState === 'approaching') return { label: 'ЗАХВАТ', color: 'emerald' as const };
-      if (captureState === 'captured') return { label: 'СНИЖЕНИЕ', color: 'red' as const };
+      if (canCapture && captureState === 'approaching') return { label: '🤖 ЗАХВАТ', color: 'emerald' as const };
+      if (captureState === 'captured') return { label: '🔥 СНИЖЕНИЕ', color: 'red' as const };
       return null;
     }
     if (gameMode === 'nanosat') {
-      if (canDeploy && deploymentState === 'approaching') return { label: 'СТЫКОВКА', color: 'cyan' as const };
-      if (deploymentState === 'undocked') return { label: 'ДАЛЕЕ', color: 'emerald' as const };
+      if (canDeploy && deploymentState === 'approaching') return { label: '🛰 СТЫКОВКА', color: 'cyan' as const };
+      if (deploymentState === 'undocked') return { label: '➡️ ДАЛЕЕ', color: 'emerald' as const };
       return null;
     }
     return null;
@@ -433,16 +464,20 @@ function MobileActionButton({ isPortrait }: { isPortrait: boolean }) {
   };
 
   const colorMap = {
-    cyan: 'bg-cyan-500/25 border-cyan-400/50 text-cyan-300',
-    emerald: 'bg-emerald-500/25 border-emerald-400/50 text-emerald-300 animate-pulse',
-    red: 'bg-red-500/25 border-red-400/50 text-red-300',
+    cyan: 'bg-cyan-500/30 border-cyan-400/60 text-cyan-200 shadow-lg shadow-cyan-500/15',
+    emerald: 'bg-emerald-500/30 border-emerald-400/60 text-emerald-200 shadow-lg shadow-emerald-500/15 animate-pulse',
+    red: 'bg-red-500/30 border-red-400/60 text-red-200 shadow-lg shadow-red-500/15',
   };
 
+  const btnSize = isPortrait
+    ? 'px-5 py-3 text-[11px]'
+    : 'px-6 py-3.5 text-xs';
+
   return (
-    <div className={`absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto z-40`}>
+    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 pointer-events-auto z-40">
       <button
         onTouchStart={(e) => { e.preventDefault(); handleAction(); }}
-        className={`px-4 py-2 rounded-lg border text-[10px] font-bold tracking-wide active:scale-95 transition-all min-h-[44px] min-w-[44px] ${colorMap[action.color]}`}
+        className={`rounded-xl border font-bold tracking-wide active:scale-95 transition-all min-h-[48px] ${btnSize} ${colorMap[action.color]}`}
       >
         {action.label}
       </button>

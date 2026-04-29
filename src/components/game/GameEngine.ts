@@ -501,6 +501,10 @@ export function useGameEngine() {
       // Mobile joystick: orientation from left stick
       state.angularVel.x += mobileInput.orientY * MOBILE_ORIENT_RATE * sensitivity;
       state.angularVel.y += mobileInput.orientX * MOBILE_ORIENT_RATE * sensitivity;
+      // Mobile roll from dedicated buttons
+      if (gs.mobileRoll !== 0) {
+        state.angularVel.z += gs.mobileRoll * MOBILE_ROLL_RATE * sensitivity;
+      }
       // Thrust from right stick / buttons (via store thrust flag)
       if (gs.thrust) {
         thrustForce = spec.thrust;

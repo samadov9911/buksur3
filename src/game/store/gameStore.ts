@@ -398,6 +398,7 @@ const initialState: GameState = {
 
   // Мобильный джойстик (ввод с тач-экрана)
   mobileInput: { orientX: 0, orientY: 0, thrustX: 0, thrustY: 0 },
+  mobileRoll: 0, // -1, 0, 1 — left, none, right
 
   // Прямое управление высотой (выставочный режим)
   pendingAltitudeChange: 0,
@@ -573,6 +574,8 @@ export interface GameActions {
   clearInclinationChange: () => void;
   /** Установить мобильный джойстик ввод */
   setMobileInput: (input: { orientX: number; orientY: number; thrustX: number; thrustY: number }) => void;
+  /** Установить мобильный крен (-1 лево, 0 нет, 1 право) */
+  setMobileRoll: (value: number) => void;
 }
 
 // ============================================================
@@ -1113,4 +1116,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
   // Мобильный джойстик ввод
   setMobileInput: (input) =>
     set({ mobileInput: { ...input } }),
+  // Мобильный крен
+  setMobileRoll: (value) =>
+    set({ mobileRoll: value }),
 }));

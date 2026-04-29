@@ -257,28 +257,34 @@ export default function HUD({ distanceToTarget, relativeSpeed, timeRemaining, ca
           </div>
           {/* Timer */}
           <span className={`text-[10px] font-mono font-bold ${timeColor} shrink-0`}>{mins}:{secs.toString().padStart(2, '0')}</span>
-          {/* Camera + Pause buttons (compact) */}
-          <div className="flex items-center gap-0.5 shrink-0">
-            {(['cockpit', 'tug', 'target', 'orbital'] as const).map((view) => (
-              <button
-                key={view}
-                onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setCameraView(view); }}
-                className={`w-7 h-7 rounded text-[10px] font-bold flex items-center justify-center transition-all ${
-                  cameraView === view
-                    ? 'bg-cyan-500/30 border border-cyan-400/50 text-cyan-300'
-                    : 'bg-black/50 border border-white/10 text-gray-500'
-                }`}
-              >
-                {view === 'cockpit' ? '1' : view === 'tug' ? '2' : view === 'target' ? '3' : '4'}
-              </button>
-            ))}
+          {/* Camera + Pause buttons */}
+          <div className="flex items-center gap-1 shrink-0">
+            {(['cockpit', 'tug', 'target', 'orbital'] as const).map((view) => {
+              const labels: Record<string, string> = { cockpit: '📷', tug: '🚀', target: '🎯', orbital: '🌍' };
+              const nums: Record<string, string> = { cockpit: '1', tug: '2', target: '3', orbital: '4' };
+              return (
+                <button
+                  key={view}
+                  onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().setCameraView(view); }}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
+                    cameraView === view
+                      ? 'bg-cyan-500/30 border border-cyan-400/60 shadow-sm shadow-cyan-500/20'
+                      : 'bg-black/60 border border-white/15 active:bg-white/10'
+                  }`}
+                  title={`${nums[view]} — Камера`}
+                >
+                  <span className="text-sm leading-none">{labels[view]}</span>
+                </button>
+              );
+            })}
             <button
               onTouchStart={(e) => { e.preventDefault(); useGameStore.getState().pauseGame(); }}
-              className="w-7 h-7 rounded bg-black/50 border border-white/10 flex items-center justify-center"
+              className="w-8 h-8 rounded-lg bg-black/60 border border-white/15 flex items-center justify-center active:bg-white/10 transition-all"
+              title="Пауза"
             >
-              <svg width="10" height="10" viewBox="0 0 12 12" fill="none">
-                <rect x="2" y="2" width="3" height="8" rx="0.5" fill="#9ca3af" />
-                <rect x="7" y="2" width="3" height="8" rx="0.5" fill="#9ca3af" />
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <rect x="2" y="1.5" width="3" height="9" rx="0.5" fill="#9ca3af" />
+                <rect x="7" y="1.5" width="3" height="9" rx="0.5" fill="#9ca3af" />
               </svg>
             </button>
           </div>
